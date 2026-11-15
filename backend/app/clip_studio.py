@@ -13,6 +13,7 @@ from pathlib import Path
 from .captions import write_animated_captions
 from .highlights import detect_scene_changes, suggest_highlights
 from .match_clips import Moment, detect_loud_moments, duration_seconds, render_short
+from .voice import synthesize_voiceover
 
 
 class FootageRights(str, Enum):
@@ -67,6 +68,8 @@ def make_review_clip(
     headline: str,
     caption_script: str,
     narration_audio: Path | None = None,
+    narration_script: str | None = None,
+    voice: str = "marin",
     size: tuple[int, int] = (1080, 1920),
 ) -> Path:
     """Render an authorized draft Short. Does NOT publish or certify clearance."""
@@ -75,6 +78,10 @@ def make_review_clip(
         raise ValueError("Review captions cannot be blank")
     if output.resolve() == source.resolve():
         raise ValueError("Output cannot overwrite source footage")
+    if narration_script and narration_audio:
+        raise ValueError("Choose either a narration audio file or an AI narration script")
+    if narration_script:
+        narration_audio = synthesize_voiceover(narration_script, output.with_suffix(".voice.mp3"), voice=voice)
     captions = output.with_suffix(".ass")
     write_animated_captions(caption_script, end - start, captions)
     render_short(
