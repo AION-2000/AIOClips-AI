@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101622">
+<title>AIOClips AI · Private Studio</title>
+<style>
+:root{color-scheme:dark;font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0c1220;color:#f6f8fd}
+*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:24px 16px 70px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.logo{font-size:1.3rem;font-weight:850;letter-spacing:-.5px}.logo span{color:#5fe4cc}
+small,.muted{color:#a2acbf}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.71rem;color:#5fe4cc;font-weight:750}
+h1{font-size:clamp(1.8rem,6vw,3.4rem);line-height:1.1;letter-spacing:-.06em;margin:4px 0 8px}h2{margin:0 0 14px;font-size:1.04rem}p{margin:8px 0 18px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.85fr);gap:18px}.panel{border:1px solid #303b4f;background:#151e2e;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 8px 40px #0001}
+label{font-weight:650;display:block;margin:12px 0 5px}input,select,textarea{width:100%;background:#0c1423;color:white;border:1px solid #3a455a;padding:12px 13px;border-radius:10px;font:inherit;outline:none}input:focus,textarea:focus,select:focus{border-color:#5fe4cc}textarea{resize:vertical;min-height:77px}
+button{border:0;border-radius:10px;padding:12px 16px;font:inherit;font-weight:750;cursor:pointer;background:#5fe4cc;color:#0e1b23}button:hover{filter:brightness(.96)}button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#2d384b;color:#f9fcff}.full{width:100%;margin-top:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check{display:flex;align-items:flex-start;gap:10px;font-weight:500}.check input{width:20px;height:20px;margin:2px 0;flex:0 0 auto}
+video{width:100%;max-height:390px;object-fit:contain;background:#090d13;border-radius:12px}.moments{display:grid;gap:8px}.moment{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0e1625;padding:9px 12px;border:1px solid #303d53;border-radius:10px}.moment p{margin:0}
+#message{white-space:pre-wrap;color:#b9f7e9;margin-top:10px;min-height:25px}.note{padding:10px 12px;background:#233042;border:1px solid #344154;border-radius:10px;color:#d2d9e6;font-size:.84rem}.danger{color:#ffbdac}
+@media(max-width:740px){.layout{grid-template-columns:1fr}.panel{padding:16px}.grid2{gap:8px}header{margin-bottom:18px}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="logo">AIO<span>Clips</span> AI <small>STUDIO</small></div><small>Private workspace · Alpha</small></header>
+<p class="eyebrow">Authorized footage → vertical highlights</p>
+<h1>Find the moment.<br>Make the Short.</h1>
+<p class="muted">Upload video footage you are allowed to reuse. Pick an exciting moment, add narration and captions, export a vertical MP4.</p>
+<div class="layout">
+<div>
+<section class="panel">
+<h2>01 · Unlock the studio</h2>
+<label for="token">Private studio access token</label>
+<input id="token" type="password" autocomplete="off" placeholder="Token configured on your backend server">
+<small>Used only in memory for this open page; not saved in the browser.</small>
+</section>
+<section class="panel">
+<h2>02 · Source video</h2>
+<label for="url">YouTube reference link (metadata only)</label>
+<div class="grid2" style="grid-template-columns:minmax(0,1fr) auto"><input id="url" type="url" placeholder="https://youtu.be/…"><button class="secondary" id="inspectLink">Check</button></div>
+<p class="note">A YouTube link does not grant reuse rights. We do not scrape protected streams. Upload the original or licensed media file below.</p>
+<label for="videoFile">Choose authorized MP4, MOV, WebM or other playable video</label>
+<input id="videoFile" type="file" accept="video/*">
+<button class="full" id="upload">Upload and suggest exciting moments</button>
+<div id="uploadInfo" class="muted"></div>
+</section>
+<section class="panel">
+<h2>03 · Choose your clip</h2>
+<div id="moments" class="moments"><small>Upload a video to see suggestions.</small></div>
+<div class="grid2">
+<div><label for="start">Start (seconds)</label><input id="start" type="number" min="0" step=".1" value="0"></div>
+<div><label for="end">End (seconds)</label><input id="end" type="number" min=".1" step=".1" value="20"></div>
+</div>
+</section>
+<section class="panel">
+<h2>04 · Make your Short</h2>
+<label for="headline">On-screen headline</label>
+<input id="headline" maxlength="90" value="WHAT A MOMENT!">
+<label for="caption">Animated caption text</label>
+<textarea id="caption">You have to see this incredible moment!</textarea>
+<label for="narration">AI voice script (optional)</label>
+<textarea id="narration" placeholder="Leave empty for original video sound">You have to see this incredible moment!</textarea>
+<small>AI voice requires a server-side speech API key and credits. Narration is optional.</small>
+<label for="rights">What permits you to reuse this video?</label>
+<select id="rights">
+<option value="owned">I recorded / own this video</option>
+<option value="licensed">I have a license for reuse</option>
+<option value="public_domain">Verified public-domain content</option>
+<option value="compatible_creative_commons">Compatible Creative Commons license</option>
+</select>
+<label for="evidence">Source or rights evidence</label>
+<input id="evidence" placeholder="E.g., original camera recording or license reference">
+<label class="check"><input id="permission" type="checkbox">I have permission to reproduce, edit and publish this footage and its audio.</label>
+<button class="full" id="generate">Generate review clip</button>
+<div id="message" aria-live="polite"></div>
+</section>
+</div>
+<div>
+<section class="panel">
+<h2>Preview</h2>
+<video id="preview" controls playsinline preload="metadata"></video>
+<div class="muted" id="previewNote">Select a video to preview it here.</div>
+</section>
+<section class="panel">
+<h2>Your exported Short</h2>
+<video id="result" controls playsinline preload="metadata"></video>
+<button id="download" class="full" disabled>Download MP4</button>
+<small id="status" class="muted">No render yet.</small>
+</section>
+<section class="panel">
+<h2>Rights-aware by design</h2>
+<p class="muted">AI narration, transformations and subtitles do not grant rights or guarantee freedom from Content ID claims, strikes or reused-content monetization restrictions.</p>
+<p class="note">Outputs stay as drafts for review. There is no automatic YouTube publication from this app.</p>
+</section>
+</div>
+</div>
+</main>
+<script src="/studio.js" defer></script>
+</body>
+</html>
