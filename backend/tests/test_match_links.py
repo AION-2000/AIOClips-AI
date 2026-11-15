@@ -1,6 +1,6 @@
 import pytest
 
-from backend.app.match_links import canonical_youtube_url, parse_youtube_video_id
+from app.match_links import canonical_youtube_url, parse_youtube_video_id
 
 
 def test_sample_match_link():
