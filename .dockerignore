@@ -1,0 +1,15 @@
+.git
+.github
+.env
+.env.*
+__pycache__
+*.py[cod]
+.pytest_cache
+backend/tests
+docs
+*.mp4
+*.mov
+*.webm
+*.wav
+*.mp3
+data
