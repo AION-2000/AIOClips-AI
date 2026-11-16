@@ -2,6 +2,18 @@
 
 A private, rights-aware video clipping studio. **Development alpha — not an automatic copyright-clearing service.**
 
+## Two publishing workflows
+
+### 1. Authorized source clip
+
+Use footage and its sound only when you have appropriate reuse rights. Upload it and select energetic candidate moments, then add captions and optional AI narration.
+
+### 2. Original story (reference-only)
+
+Have a YouTube reference but **no** right to reuse its footage? Open the private studio's **Original Short** section instead. Provide a verified factual summary in your own words, a distinctive title, and 1–8 independently written creative story beats. The backend generates brand-new geometric visuals, karaoke-style text overlays and optional AI narration **without fetching or displaying any video frames or audio from the reference**. The reference link is only validated; the app does not automatically watch, research or summarize the linked video.
+
+This is a safer alternative to re-uploading another person's video. It is not a copyright clearance service. Facts must be checked, original material must not imitate protected expression, and every draft must be reviewed before publication. A watermark, crop, angle adjustment, or different voice does not magically establish ownership. Repetitive, low-effort AI-generated scripts may still be ineligible for YouTube monetization.
+
 ## What works in the private backend
 
 - Upload a video that you own or have permission to edit and publish (up to 700 MB; maximum four hours).
@@ -15,7 +27,7 @@ A private, rights-aware video clipping studio. **Development alpha — not an au
 
 ## Not yet done
 
-- **YouTube links are parsed for reference only**. YouTube videos are not downloaded; a link is not proof of editing/publication rights. Upload a separately authorized original file.
+- **YouTube links are parsed for reference only**. YouTube videos are not downloaded. For licensed clip mode, upload an authorized original file. For Original Story mode, supply independently verified facts and freshly written creative text.
 - Goal or event identification by AI vision, automatically accurate commentary, word-perfect caption alignment and automated YouTube OAuth publishing are not complete.
 - The GitHub Pages URL is an independent static prototype; **it does not run FFmpeg or the authenticated backend**.
 - The private studio API must be hosted on a server; it is not live merely because the source was committed to GitHub.
@@ -44,6 +56,7 @@ For phone use outside your local network, deploy the Docker image to an HTTPS ho
 - `POST /v1/uploads`: upload a video file
 - `POST /v1/moments`: suggested clip timestamps
 - `POST /v1/renders`: queue authorized draft export
+- `POST /v1/original-stories`: queue new graphics-only video from independently written facts and commentary
 - `GET /v1/renders/{job_id}`: job status
 - `GET /v1/exports/{job_id}`: download approved-source draft
 
