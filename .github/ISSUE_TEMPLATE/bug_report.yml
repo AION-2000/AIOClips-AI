@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible defect in AIOClips AI
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Never include access tokens, API keys, private videos, or footage you do not have rights to share."
+  - type: input
+    id: component
+    attributes:
+      label: Affected component
+      placeholder: "Private studio / FastAPI / rendering / Pages preview"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local Python
+        - Local Docker
+        - Private hosted backend
+        - GitHub Pages prototype
+        - Other
+    validations:
+      required: true
