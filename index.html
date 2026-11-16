@@ -531,9 +531,7 @@ $('musicForm').addEventListener('submit',async event=>{
   if(!/\.(mp3|wav|m4a)$/i.test(file.name)){
     setMusicStatus('Unsupported audio. Choose MP3, WAV or M4A.',true);return;
   }
-  if(file.size>12*1024*1024){
-    setMusicStatus('File exceeds default 12 MiB limit; use a shorter audio file.',true);return;
-  }
+  // Server-advertised limits are checked after HTTPS authentication below.
   if(!$('musicRights').value||!$('musicConfirm').checked||
       !$('musicLicense').value.trim()||!$('musicProof').value.trim()){
     setMusicStatus('Select your music rights and supply license/plan plus HTTPS proof.',true);return;
@@ -541,6 +539,10 @@ $('musicForm').addEventListener('submit',async event=>{
   musicRunning=true;$('musicGenerate').disabled=true;resetMusic();
   try{
     token();apiBase();
+    const options=await(await request('/v1/music/config')).json();
+    const limitMiB=Number(options.max_audio_mb)||12;
+    $('musicLimit').textContent='Server limit: '+limitMiB+' MiB / '+options.max_audio_seconds+' seconds.';
+    if(file.size>limitMiB*1024*1024)throw Error('Audio exceeds '+limitMiB+' MiB limit.');
     setMusicStatus('Uploading audio and validating the commercial rights declaration…');
     const body=new FormData();
     body.append('audio',file,file.name);
