@@ -74,6 +74,26 @@ flowchart TB
 | `captions.py` | Animated ASS text tracks | Pacing estimated, not forced-aligned |
 | `approval.py` | Pure review-state policy | Not yet persisted/connected to upload UI |
 
+## Music to Video (additive route)
+
+The hosted `backend/app/original_api.py` also mounts `backend/app/music/api.py` at `/v1/music`, using the **same server-side owner bearer token, CORS policy and single FFmpeg executor**. Existing story and footage endpoints are unchanged.
+
+```mermaid
+flowchart LR
+    Mobile["GitHub Pages Music tab"] -->|"Auth header + multipart audio and rights proof"| Music["/v1/music/jobs"]
+    Music --> Manifest["Private rights manifest"]
+    Music --> Analyze["FFmpeg RMS / tempo / beats"]
+    Analyze --> Theme["Claude Sonnet 5.5 (optional) or offline rules"]
+    Theme --> Stock["Pexels / Pixabay (optional) or procedural visuals"]
+    Stock --> Edit["Beat cuts + crossfades + waveform + loudnorm"]
+    Edit --> MP4["Private MP4 and source credits"]
+    MP4 -->|"Authenticated status, preview, download"| Mobile
+```
+
+The implementation lives in `backend/app/music/`: `audio_analyzer.py`, `theme_planner.py`, `visual_fetcher.py`, `beat_editor.py`, `renderer.py`, `job_manifest.py`, `music_provider.py`, and `api.py`. Jobs are **single owner only**, with 24-hour scheduled deletion, but Render Free spin-down/restarts can delete output earlier. A preview is delivered to the phone only when a real MP4 exists. The deployed GitHub Pages static HTML contains **no API keys or bearer tokens**. Video is composed at low working resolution and upscaled to the chosen final preset to limit memory.
+
+**Explicitly not supported:** AI music generation without verified commercial rights, auto-transcribing lyrics on small Free instances, arbitrary social source downloading, serverless private music input via public GitHub Actions, automatic publishing. See [Music to Video guide](MUSIC_TO_VIDEO.md).
+
 ## Security decisions
 
 - Private endpoints use a server-side `STUDIO_ACCESS_TOKEN` and constant-time comparison.
