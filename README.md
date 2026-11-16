@@ -185,6 +185,7 @@ Review [`SECURITY.md`](SECURITY.md) before exposing the service to the internet.
 
 | Resource | Why it matters |
 | :--- | :--- |
+| **[Project vision & progress](docs/PROJECT_VISION_AND_PROGRESS.md)** | What we have built, our final goal, verified milestones and next steps |
 | [Architecture](docs/ARCHITECTURE.md) | Components, trust boundaries and real request flows |
 | [Roadmap](docs/ROADMAP.md) | Prioritized delivery plan with acceptance criteria |
 | [Deployment guide](docs/DEPLOYMENT.md) | Local development and hosting requirements |
