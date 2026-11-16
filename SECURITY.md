@@ -21,6 +21,14 @@ When reporting, include an affected commit or version, a safe reproduction proce
 | Secrets | Environment variables only | Managed secret storage and rotation |
 | Publishing | Review required in domain policy | Durable signed approval history and connected enforcement |
 
+## Hosted original-story beta security (November 2026)
+
+The new `backend/app/original_api.py` Render service is scoped to **original text stories only**. The public GitHub Pages editor sends requests over HTTPS with a server-held random `STUDIO_ACCESS_TOKEN` supplied by the user at runtime. The token is never embedded in `index.html` or saved in browser storage. CORS allowlists only `https://aion-2000.github.io`; remember that CORS is a browser restriction **not a replacement for authentication**.
+
+The API rejects non-conforming JSON, allows 1–8 original beats and a maximum 80 seconds total, uses constant-time SHA-256 digest comparison for its bearer token, throttles authentication/job submission, and limits active/queued jobs. Jobs and MP4s are temporary; a janitor removes expired outputs. MP4 download requires the owner token and is not a GitHub Actions public artifact.
+
+**Remaining limitations:** one shared token (no revocation per device), process-local rate limiter and job state, no private durable storage or malware/media sandbox, Render Free container restarts and limited compute. Treat this as a private personal prototype, not a multi-tenant or high-sensitivity service. Rotate a compromised token in Render **Environment**, and do not share it in screenshots, GitHub issues or workflow inputs. To test in an Android browser, follow [the mobile deployment guide](docs/MOBILE_STUDIO_DEPLOYMENT.md).
+
 ## Deployment baseline
 
 1. Use HTTPS and an up-to-date FFmpeg build.
