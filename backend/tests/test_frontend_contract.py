@@ -29,11 +29,15 @@ def test_mobile_controls_exist():
     markup = PAGE.read_text(encoding="utf-8")
     parser = Controls()
     parser.feed(markup)
-    assert {"story", "reference", "upload"} <= set(parser.tabs)
+    assert {"story", "reference", "upload", "music"} <= set(parser.tabs)
     required = {
         "storyForm", "storyTitle", "beats", "duration", "facts", "original",
         "ownerToken", "apiUrl", "connect", "generate", "player", "download",
         "jobStatus", "appMessage", "referenceForm", "referenceUrl",
+        "musicForm", "musicFile", "musicRights", "musicLicense", "musicProof",
+        "musicConfirm", "musicPreset", "musicVisualizer", "musicAiTheme",
+        "musicStock", "musicGenerate", "musicPlayer", "musicDownload",
+        "musicCredits", "musicMessage", "musicStatus",
     }
     assert required <= parser.ids
     assert 'name="viewport"' in markup
@@ -53,3 +57,18 @@ def test_embedded_javascript_syntax(tmp_path):
     assert "STUDIO_ACCESS_TOKEN=" not in scripts[0]
     assert "localStorage.setItem('ownerToken'" not in scripts[0]
     assert "localStorage.setItem('aioclips-api-url'" in scripts[0]
+
+
+def test_music_ui_exposes_rights_and_no_client_secrets():
+    markup = PAGE.read_text(encoding="utf-8")
+    assert 'value="created_by_me"' in markup
+    assert 'value="ai_commercial_plan"' in markup
+    assert 'value="commercial_license"' in markup
+    assert 'value="royalty_free_commercial"' in markup
+    assert 'value="generate" disabled' in markup
+    assert "support.google.com/youtube/answer/14328491" in markup
+    assert "support.google.com/youtube/answer/1311392" in markup
+    assert "ANTHROPIC_API_KEY=" not in markup
+    assert "PEXELS_API_KEY=" not in markup
+    assert "PIXABAY_API_KEY=" not in markup
+    assert "STUDIO_ACCESS_TOKEN=" not in markup
