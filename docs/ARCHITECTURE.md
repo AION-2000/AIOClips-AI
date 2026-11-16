@@ -7,7 +7,7 @@
 AIOClips has four distinct surfaces:
 
 1. **GitHub Pages mobile studio** (`index.html`) — public static HTML/JS, sends authorized original-story API requests directly to Render over HTTPS; passphrase stays in tab memory and is never committed or persisted.
-2. **Hosted original-story FastAPI API** (`backend/app/original_api.py`) — Render Free Docker, owner-token auth, one FFmpeg worker, time-limited in-memory jobs, private temporary files and a bearer-protected MP4 endpoint.
+2. **Hosted original-story and licensed-footage FastAPI API** (`backend/app/original_api.py`) — Render Free Docker, owner-token auth, one FFmpeg worker, time-limited in-memory jobs, private temporary footage/MP4 files and bearer-protected downloads.
 3. **Legacy private footage studio** (`backend/app/server.py`, `studio.html`, `studio.js`) — separately runnable local upload/highlight/clip API, not exposed by the public Render deployment.
 4. **FFmpeg processing library** — original graphics, heuristic footage analysis, animated captions and optional speech synthesis.
 
@@ -21,7 +21,7 @@ flowchart LR
     API -->|"Authenticated status and MP4 download"| Pages
 ```
 
-No reference video frames, external links or external audio are fetched in this hosted path. A background janitor deletes completed outputs after the configured TTL. Free-tier restarts can erase all job metadata and media. The Render service reports live; **physical Android end-to-end acceptance remains pending**.
+This graphic-story branch does not fetch any video frames or external audio. **The hosted API now also accepts explicitly authorized uploaded footage** with a small-file quota, uses the existing audio-energy / scene-cut heuristic to propose highlights, and runs `make_review_clip` for a selected 540×960 MP4 export. This does not import or download videos from social-media URLs. See [authorized footage](AUTHORIZED_FOOTAGE_WORKFLOW.md). A background janitor deletes completed outputs after the configured TTL. Free-tier restarts can erase all job metadata and media. The Render service reports live; **physical Android end-to-end acceptance remains pending**.
 
 ## Media flow
 
@@ -62,7 +62,7 @@ flowchart TB
 
 | Component | Responsibility | Current limitation |
 | --- | --- | --- |
-| `original_api.py` | Hosted authenticated original-story jobs, CORS, rate limits, cleanup | Single owner, ephemeral jobs, free-tier restarts |
+| `original_api.py` | Hosted authenticated original-story and rights-declared footage jobs, CORS, rate limits, cleanup | Single owner, ephemeral jobs, free-tier restarts |
 | `server.py` | Separate local footage upload/highlight/render API | Shared token, in-memory job table |
 | `match_links.py` | Canonicalize YouTube IDs | Does not fetch video information |
 | `url_safety.py` | Allowlisted URL preflight | No SSRF-safe fetcher implemented |
