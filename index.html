@@ -19,7 +19,7 @@ h1{font-size:clamp(30px,5vw,48px);line-height:1.12;letter-spacing:-.055em;margin
 h2{margin:0 0 8px;font-size:20px;letter-spacing:-.025em}h3{margin:0 0 6px;font-size:16px}
 p{line-height:1.6;color:#abc2d0;margin:0}small{font-size:12px;line-height:1.5;color:#a4bac9}
 .lead{font-size:15px;max-width:700px;margin-bottom:24px}
-.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:25px 0}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:25px 0}
 .tab{background:#112537;border:1px solid #2b4b60;border-radius:15px;text-align:left;padding:17px;color:#e9f7fb;display:grid;gap:4px;min-height:92px}
 .tab.selected{border:1px solid #6cf1d8;background:#103a40;box-shadow:inset 0 0 0 1px #6cf1d83d}
 .tab strong{font-size:14px}.tab span{color:#acc4cf;font-size:12px}
@@ -45,7 +45,7 @@ input:focus,textarea:focus,select:focus{border-color:#66efd6}
 .placeholder{aspect-ratio:9/12;width:min(100%,260px);margin:17px auto;display:flex;align-items:center;justify-content:center;border:1px dashed #49697b;border-radius:15px;color:#91b0bf;text-align:center;padding:20px;line-height:1.7;font-size:13px;background:linear-gradient(140deg,#17364a,#0c2234)}
 .muted{color:#a6bbc9;font-size:13px}.hidden{display:none!important}.steps{display:grid;gap:10px;margin:20px 0}.step{padding:12px 13px;background:#0c1e2e;border:1px solid #2d4b60;border-radius:11px;font-size:13px;color:#bfd3df}.step b{color:#e9f7fb}
 .footer{border-top:1px solid #254658;margin-top:32px;padding-top:20px;color:#8ea8b8;font-size:12px}
-@media(max-width:780px){.layout{grid-template-columns:1fr}.panel{padding:18px}.tabs{gap:7px}.tab{padding:12px;min-height:100px}.tab strong{font-size:12px}.tab span{font-size:11px}}
+@media(max-width:780px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr}.panel{padding:18px}.tabs{gap:7px}.tab{padding:12px;min-height:100px}.tab strong{font-size:12px}.tab span{font-size:11px}}
 @media(max-width:390px){.wrap{padding:14px 12px 30px}.settings{grid-template-columns:1fr}.tab{min-height:118px}.pill{font-size:11px}}
 </style>
 </head>
@@ -65,6 +65,7 @@ input:focus,textarea:focus,select:focus{border-color:#66efd6}
 <button type="button" class="tab selected" data-tab="story" role="tab" aria-selected="true"><strong>✦ Create original story</strong><span>MP4 rendering · needs connected service</span></button>
 <button type="button" class="tab" data-tab="reference" role="tab" aria-selected="false"><strong>↗ Paste reference URL</strong><span>Validation only · live</span></button>
 <button type="button" class="tab" data-tab="upload" role="tab" aria-selected="false"><strong>▣ Clip permitted footage</strong><span>Upload · analyze · render MP4</span></button>
+<button type="button" class="tab" data-tab="music" role="tab" aria-selected="false"><strong>♫ Music to Video</strong><span>Upload audio · beat-synced MP4</span></button>
 </div>
 <div id="story" class="layout">
 <section class="panel" aria-labelledby="storyHeading">
@@ -140,6 +141,80 @@ input:focus,textarea:focus,select:focus{border-color:#66efd6}
 <div class="statusline"><span class="dot" id="clipDot"></span><span id="clipStatus">No footage uploaded</span></div>
 <div class="actions"><button id="clipDownload" class="btn primary" disabled type="button">↓ Download edited MP4</button></div>
 <small>Only you can retrieve the file using your owner passphrase. Files expire automatically; save approved results promptly.</small>
+</aside>
+</section>
+
+<section id="music" class="layout hidden" aria-labelledby="musicHeading">
+<div class="panel">
+<h2 id="musicHeading">Music to Video</h2>
+<p>Turn music you can legally use into beat-synced visuals. Your video stays private until you review and download it.</p>
+<form id="musicForm">
+<label for="musicSource">Music source</label>
+<select id="musicSource">
+<option value="upload">Upload my own / licensed MP3, WAV or M4A</option>
+<option value="generate" disabled>Generate with AI — no commercially verified free provider enabled</option>
+</select>
+<small>Music-generation providers are pluggable on the server. Generation is disabled until commercial-use licensing can be verified.</small>
+<label for="musicFile">Audio file</label>
+<input type="file" id="musicFile" accept=".mp3,.wav,.m4a,audio/mpeg,audio/wav,audio/mp4" required>
+<small id="musicLimit">Up to 12 MiB / 90 seconds on the current Free server (server-configurable).</small>
+<label for="musicRights">Commercial music rights</label>
+<select id="musicRights" required>
+<option value="">Select your rights category</option>
+<option value="created_by_me">I made this music and own the necessary rights</option>
+<option value="ai_commercial_plan">AI generated under a plan permitting commercial use</option>
+<option value="commercial_license">Licensed for commercial use</option>
+<option value="royalty_free_commercial">Royalty-free with commercial reuse rights</option>
+</select>
+<label for="musicLicense">License or subscription plan name</label>
+<input id="musicLicense" type="text" maxlength="160" minlength="3" placeholder="Self-composed original recording / License name..." required>
+<label for="musicProof">HTTPS proof / license link</label>
+<input id="musicProof" type="url" maxlength="500" placeholder="https://your-website.example/license-proof" required>
+<small>The license category, name and proof link are retained in a private per-job manifest. Supplying them is a declaration, not automatic rights verification.</small>
+<label class="check"><input type="checkbox" id="musicConfirm" required>I confirm I have the appropriate commercial-use, synchronization and publishing rights for this music and any third-party material.</label>
+<label for="musicStyle">Visual style note (optional)</label>
+<textarea id="musicStyle" maxlength="300" style="min-height:90px" placeholder="Dreamy clouds, purple-blue palette, cinematic movement. Do not request imitation of named artists."></textarea>
+<label for="musicLyrics">Lyrics for captions / theme (optional, written by you or licensed)</label>
+<textarea id="musicLyrics" maxlength="1500" style="min-height:96px" placeholder="Paste lyrics you have rights to use. Auto-transcription is not enabled on Free hosting."></textarea>
+<small>Lyric-caption timings are estimated, not automatically aligned to vocals. If Claude is enabled, supplied lyrics may be sent to Anthropic for theming.</small>
+<label for="musicPreset">Video preset</label>
+<select id="musicPreset"><option value="shorts">Shorts / Reels — 1080×1920 (9:16)</option><option value="youtube">YouTube landscape — 1920×1080 (16:9)</option></select>
+<label class="check"><input id="musicVisualizer" type="checkbox" checked>Show audio-reactive waveform visualizer</label>
+<label class="check"><input id="musicAiTheme" type="checkbox" checked>Use Anthropic for theming if server key is available; otherwise use free rules</label>
+<label class="check"><input id="musicStock" type="checkbox" checked>Prefer Pexels / Pixabay stock videos when API keys are configured; fall back to generated visuals</label>
+<div class="actions"><button id="musicGenerate" type="submit" class="btn primary">♫ Generate Music Video</button></div>
+</form>
+<div class="notice" id="musicMessage" role="status" aria-live="polite">Connect your private renderer above, then choose music and confirm its rights. No publishing occurs automatically.</div>
+<div class="notice">
+<strong>Before uploading to YouTube:</strong> Review the video and vary your creative approach. Realistic altered or AI-generated content, including AI music as the focus, may require disclosure. Mass-produced, near-identical videos can be ineligible for monetization.
+<a href="https://support.google.com/youtube/answer/14328491" target="_blank" rel="noopener noreferrer">AI disclosure</a> ·
+<a href="https://support.google.com/youtube/answer/1311392" target="_blank" rel="noopener noreferrer">Monetization guidance</a>
+</div>
+</div>
+<aside class="panel">
+<h2>Music video preview</h2>
+<p class="muted">Only a successfully rendered MP4 is shown here. Video may take longer on Render Free.</p>
+<div id="musicEmpty" class="placeholder">♫<br> Your completed music video will appear here</div>
+<video id="musicPlayer" class="video hidden" playsinline controls preload="metadata" aria-label="Music video output"></video>
+<div class="statusline"><span class="dot" id="musicDot"></span><span id="musicStatus">No music job yet</span></div>
+<div class="actions">
+<button id="musicDownload" type="button" class="btn primary" disabled>↓ Download MP4</button>
+<button id="musicCredits" type="button" class="btn secondary" disabled>↓ Source credits</button>
+</div>
+<div id="musicMetadata" class="hidden">
+<label>Suggested title</label><div class="step" id="musicTitle"></div>
+<label>Description</label><div class="step" id="musicDescription"></div>
+<label>Suggested hashtags</label><div class="step" id="musicHashtags"></div>
+<label>Analysis</label><div class="step" id="musicStats"></div>
+</div>
+<div class="steps">
+<div class="step">1 · Rights verified by your own declaration</div>
+<div class="step">2 · Audio duration, BPM, beat grid and energy curve</div>
+<div class="step">3 · Theme, stock footage or generated animated backgrounds</div>
+<div class="step">4 · FFmpeg transitions, waveform, loudness and MP4 output</div>
+</div>
+<p class="muted">Temporary files expire after 24 hours, but Render Free may restart or spin down sooner, deleting them early. Save the finished video and credits immediately.</p>
+<p class="muted" style="margin-top:12px">Stock attribution where used: <a href="https://www.pexels.com/" target="_blank" rel="noopener noreferrer">Pexels</a> · <a href="https://pixabay.com/" target="_blank" rel="noopener noreferrer">Pixabay</a>. Review the per-job credits and licensing restrictions before posting.</p>
 </aside>
 </section>
 <footer class="footer">AIOClips AI · Single-owner studio · No automatic publishing · <a href="https://github.com/AION-2000/AIOClips-AI" target="_blank" rel="noopener noreferrer">Source code</a> · <a href="https://github.com/AION-2000/AIOClips-AI/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">Security</a></footer>
@@ -415,6 +490,118 @@ $('clipDownload').addEventListener('click',()=>{
   if(!clipBlobUrl)return;
   const link=document.createElement('a');link.href=clipBlobUrl;link.download='AIOClips-Edited-Footage.mp4';
   document.body.appendChild(link);link.click();link.remove();
+});
+
+
+let musicRunning=false,musicBlobUrl=null,musicCreditsText=null;
+function setMusicStatus(message, error=false){
+  $('musicMessage').textContent=message;
+  $('musicMessage').className='notice'+(error?' error':'');
+  $('musicStatus').textContent=message;
+  $('musicDot').className='dot'+(error?' bad':' ok');
+}
+function resetMusic(){
+  $('musicDownload').disabled=true;$('musicCredits').disabled=true;
+  $('musicPlayer').pause();$('musicPlayer').removeAttribute('src');$('musicPlayer').load();
+  $('musicPlayer').classList.add('hidden');$('musicEmpty').classList.remove('hidden');
+  $('musicMetadata').classList.add('hidden');
+  if(musicBlobUrl)URL.revokeObjectURL(musicBlobUrl);
+  musicBlobUrl=null;musicCreditsText=null;
+}
+function downloadText(text, filename){
+  const href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+  const link=document.createElement('a');link.href=href;link.download=filename;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(href),1500);
+}
+$('musicCredits').addEventListener('click',()=>{
+  if(musicCreditsText!==null)downloadText(musicCreditsText,'AIOClips-Music-Credits.txt');
+});
+$('musicDownload').addEventListener('click',()=>{
+  if(!musicBlobUrl)return;
+  const link=document.createElement('a');link.href=musicBlobUrl;
+  link.download='AIOClips-Music-Video.mp4';
+  document.body.appendChild(link);link.click();link.remove();
+});
+$('musicForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  if(musicRunning)return;
+  const file=$('musicFile').files[0];
+  if(!file){setMusicStatus('Select an MP3, WAV or M4A file.',true);return}
+  if(!/\.(mp3|wav|m4a)$/i.test(file.name)){
+    setMusicStatus('Unsupported audio. Choose MP3, WAV or M4A.',true);return;
+  }
+  if(file.size>12*1024*1024){
+    setMusicStatus('File exceeds default 12 MiB limit; use a shorter audio file.',true);return;
+  }
+  if(!$('musicRights').value||!$('musicConfirm').checked||
+      !$('musicLicense').value.trim()||!$('musicProof').value.trim()){
+    setMusicStatus('Select your music rights and supply license/plan plus HTTPS proof.',true);return;
+  }
+  musicRunning=true;$('musicGenerate').disabled=true;resetMusic();
+  try{
+    token();apiBase();
+    setMusicStatus('Uploading audio and validating the commercial rights declaration…');
+    const body=new FormData();
+    body.append('audio',file,file.name);
+    body.append('rights',$('musicRights').value);
+    body.append('license_name',$('musicLicense').value.trim());
+    body.append('proof_link',$('musicProof').value.trim());
+    body.append('rights_confirmed','true');
+    body.append('style_note',$('musicStyle').value.trim());
+    body.append('lyrics',$('musicLyrics').value.trim());
+    body.append('preset',$('musicPreset').value);
+    body.append('visualizer',String($('musicVisualizer').checked));
+    body.append('prefer_ai',String($('musicAiTheme').checked));
+    body.append('prefer_stock',String($('musicStock').checked));
+    const response=await request('/v1/music/jobs',{method:'POST',body});
+    const created=await response.json();
+    if(!/^[0-9a-f]{32}$/.test(created.job_id||''))throw Error('Invalid server job identifier.');
+    const id=created.job_id,deadline=Date.now()+15*60*1000;
+    let record=null;
+    while(Date.now()<deadline){
+      const data=await(await request('/v1/music/jobs/'+id)).json();
+      record=data;
+      if(data.status==='error')throw Error(data.detail||'The server could not render this music.');
+      if(data.status==='ready')break;
+      const states={
+        queued:'Job queued…',analyzing:'Analyzing tempo, beats and energy…',
+        theming:'Planning mood, colors and scenes…',
+        fetching_visuals:'Finding stock footage or preparing animated backgrounds…',
+        rendering:'FFmpeg is rendering and normalizing audio…'
+      };
+      setMusicStatus(states[data.status]||'Processing music…');
+      await new Promise(resolve=>setTimeout(resolve,2600));
+    }
+    if(!record||record.status!=='ready')throw Error('Music render timeout. Render Free may be overloaded.');
+    setMusicStatus('Rendering complete. Downloading your MP4 and credits…');
+    const mp4=await(await request('/v1/music/jobs/'+id+'/download')).blob();
+    if(!mp4.size||!mp4.type.includes('video/mp4'))throw Error('Server did not return a valid MP4.');
+    musicBlobUrl=URL.createObjectURL(mp4);
+    $('musicPlayer').src=musicBlobUrl;
+    $('musicPlayer').classList.remove('hidden');$('musicEmpty').classList.add('hidden');
+    $('musicDownload').disabled=false;
+    $('musicTitle').textContent=record.title||'Music visualization';
+    $('musicDescription').textContent=record.description||'';
+    $('musicHashtags').textContent=(record.hashtags||[]).join(' ');
+    const a=record.stats||{};
+    $('musicStats').textContent=(a.bpm||'?')+' BPM · '+(a.duration||'?')+
+      ' seconds · mood '+(record.theme?.mood||'unknown');
+    $('musicMetadata').classList.remove('hidden');
+    try{
+      musicCreditsText=await(await request('/v1/music/jobs/'+id+'/credits')).text();
+      $('musicCredits').disabled=false;
+    }catch{}
+    const warnings=record.warnings&&record.warnings.length?'\n'+record.warnings.join(' | '):'';
+    setMusicStatus('MP4 ready ('+(mp4.size/1024/1024).toFixed(1)+' MiB). Review and download.'+warnings);
+  }catch(error){
+    const text=error instanceof TypeError
+      ? 'Server unreachable. Check HTTPS, token and free-host availability.'
+      : (error.message||String(error));
+    setMusicStatus(text,true);
+  }finally{
+    musicRunning=false;$('musicGenerate').disabled=false;
+  }
 });
 
 function youtubeReference(raw) {
