@@ -37,6 +37,16 @@ The upload route requires the bearer token and consent, enforces an approximatel
 
 **Residual risks:** rights declarations are not independently verified; multimedia parsing can expose codec vulnerabilities; no dedicated FFmpeg sandbox, antivirus engine, persistent jobs or multiple-user authorization is provided. Do not upload confidential or highly sensitive footage. Mobile browser acceptance and production quotas still require real-device checks.
 
+## Music to Video rights and hosting security
+
+The `backend/app/music/` add-on requires the existing owner bearer token. It refuses to accept an upload before all of these are present: a recognized commercial-use rights category, license or plan name (3–160 characters), a valid HTTPS proof link and the explicit rights confirmation. These declarations and source filenames are stored in a **private per-job manifest JSON**, never in public GitHub Actions artifacts. Uploaded audio, stock clips, finished video and credits exist only on the temporary host volume.
+
+User music is analyzed by bounded FFmpeg subprocesses. The `ANTHROPIC_API_KEY`, `PEXELS_API_KEY` and `PIXABAY_API_KEY` variables are **optional and only read on the server**; no key is embedded in the public frontend. If Claude is enabled, tempo statistics, the user style note and any user-supplied lyrics may leave the server for Anthropic. Set the `prefer_ai` option off to prohibit that request. Stock source downloads are restricted to provider CDN hostnames, without redirects and with a strict per-file byte cap. Rights evidence is **not** automatically authenticated by the system; creators must verify permissions for commercial distribution.
+
+The music track and credits are scheduled for deletion 24 hours after job creation/updates, but on Render Free, **15-minute idle spin-down, rebuilds or restarts can remove everything much sooner**. All job metadata and output retrieval are bearer-protected. Render Free is memory constrained; larger files or FFmpeg processing may fail. This is not a secure archival platform or a multi-user service.
+
+No copyright-check evasion, automatic cross-platform posting, source ripping or unverified free commercial AI music generation is implemented. Review each license, third-party rights, lyrics and realistic AI disclosure obligations before posting. See [Music to Video guide](docs/MUSIC_TO_VIDEO.md).
+
 ## Deployment baseline
 
 1. Use HTTPS and an up-to-date FFmpeg build.
