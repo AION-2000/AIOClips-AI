@@ -1,136 +1,258 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a1120"><meta name="description" content="AIOClips AI Studio — private video studio design preview (static prototype)">
-<title>AIOClips AI Studio · Prototype</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071423">
+<meta name="description" content="AIOClips AI — Your private original-story Shorts studio. Generate 540×960 MP4s from your own words.">
+<title>AIOClips AI — Create an Original Short</title>
 <style>
-:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:#eef2ff;background:#0a1120;color-scheme:dark}
-*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}
-.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.side{border-right:1px solid #293e51;padding:28px 16px;background:#101c2d}
-.brand{font-weight:850;letter-spacing:-.04em;font-size:23px;padding:0 12px 28px}.brand span{color:#58f2d2}
-.nav{display:flex;flex-direction:column;gap:8px}.nav button{border:0;text-align:left;padding:14px 16px;border-radius:12px;color:#aab8d3;background:transparent}.nav button.active,.nav button:hover{background:#1a2b42;color:white}
-.side-foot{margin-top:42px;padding:14px;border-radius:12px;background:#132137;font-size:12px;color:#a7b7d0;line-height:1.7}
-main{padding:34px;max-width:1500px;width:100%;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
-h1{font-size:30px;letter-spacing:-.04em;margin:0 0 6px}h2{font-size:19px;letter-spacing:-.02em;margin:0 0 16px}p{color:#a8b5ce;margin:0;line-height:1.6}.pill{border:1px solid #36536a;color:#9cf7e4;border-radius:100px;padding:8px 12px;font-size:12px}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}.metric,.panel{background:#142338;border:1px solid #30475c;border-radius:18px}.metric{padding:20px}.metric b{display:block;font-size:28px;margin-top:12px}.metric small{color:#9aaac4}
-.workspace{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:20px}.panel{padding:24px}.preview-layout{display:grid;grid-template-columns:minmax(160px,230px) 1fr;gap:22px;align-items:start}
-.phone{aspect-ratio:9/16;border:6px solid #263b50;border-radius:23px;overflow:hidden;background:linear-gradient(145deg,#173c33,#082c23);position:relative;box-shadow:0 18px 50px #0005;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:25px 14px;text-align:center}
-.phone .topline{font-size:11px;color:#d4fff1;font-weight:700}.visual{width:100%;height:48%;position:relative;overflow:hidden;border-radius:16px;background:radial-gradient(circle at 50% 45%,#2f566d 0,#17283c 43%,#0d1d30 100%);border:1px solid #426478;display:flex;align-items:center;justify-content:center}
-.visual:before,.visual:after{content:"";position:absolute;inset:13%;border:1px solid #5ef0d350;border-radius:50%;transform:rotate(25deg) scaleX(.8)}
-.visual:after{inset:26%;border-color:#7abfff75;transform:rotate(-25deg) scaleX(1.25)}
-.visual .orb{width:35%;aspect-ratio:1;border-radius:27%;background:linear-gradient(145deg,#6ef3d4,#398fc0);box-shadow:0 0 60px #49c7b050,0 24px 35px #0005;display:flex;align-items:center;justify-content:center;transform:rotate(-12deg)}
-.visual .orb span{display:block;border-top:24px solid transparent;border-bottom:24px solid transparent;border-left:35px solid #0c2436;transform:rotate(12deg) translateX(4px)}
-.visual .footnote{position:absolute;bottom:10px;color:#b4d9db;font-size:10px;letter-spacing:.12em;font-weight:750}
-.phone .caption{font-weight:800;font-size:clamp(13px,1.5vw,21px);text-shadow:0 2px 8px #000}.phone .watermark{font-size:10px;color:#c0f5df}
-label{display:block;color:#cbd6e9;font-size:12px;margin:16px 0 8px;font-weight:700}
-input,textarea{width:100%;background:#111e31;color:white;border:1px solid #3b4b64;border-radius:10px;padding:11px 12px;outline:none}input:focus,textarea:focus{border-color:#58f2d2}textarea{min-height:140px;resize:vertical}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{border:1px solid #3a4b62;border-radius:10px;background:#22334b;color:#f1f6ff;padding:11px 15px;font-weight:700}.btn.primary{background:#58f2d2;color:#05251b;border-color:#58f2d2}.btn.danger{background:#4d2430;border-color:#7b3645}.btn:hover:not(:disabled){filter:brightness(1.1)}
-.status{font-size:12px;color:#9cf7e4}.notice{margin-top:16px;padding:12px;border:1px solid #48546c;border-radius:10px;background:#18253b;color:#d7e0f2;font-size:13px;line-height:1.5}
-.steps{display:grid;gap:12px}.step{padding:13px;border:1px solid #34445c;border-radius:12px}.step b{font-size:14px}.step p{font-size:12px;margin-top:5px}
-.empty{padding:20px;text-align:center;color:#a8b5ce}.hidden{display:none!important}
-.footer{margin-top:25px;color:#8798b4;font-size:12px}
-@media(max-width:1000px){.shell{grid-template-columns:1fr}.side{padding:15px;border-right:0;border-bottom:1px solid #293e51}.brand{padding:0 0 12px}.nav{flex-direction:row;overflow:auto}.nav button{white-space:nowrap}.side-foot{display:none}.workspace{grid-template-columns:1fr}}
-@media(max-width:650px){main{padding:20px 14px}.metrics{grid-template-columns:repeat(2,1fr)}.panel{padding:17px}.preview-layout{grid-template-columns:1fr}.phone{width:min(65%,230px);margin:auto}.top h1{font-size:25px}}
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:#071423;color:#eef9ff;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 96% 0%,#123c52 0,transparent 38%),#071423}
+button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+a{color:#6ff1d7}a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #79efd7;outline-offset:3px}
+.wrap{max-width:1150px;margin:auto;padding:20px 20px 48px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:12px 0 24px}
+.logo{font-weight:850;font-size:24px;letter-spacing:-.055em}.logo b{color:#66f2d5}.topbar small{display:block;color:#a8bdca;font-size:11px;letter-spacing:.12em;margin-top:1px}
+.pill{border:1px solid #426877;padding:9px 12px;border-radius:100px;color:#b1dfd8;font-size:12px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.12;letter-spacing:-.055em;margin:0 0 12px;max-width:850px}
+h2{margin:0 0 8px;font-size:20px;letter-spacing:-.025em}h3{margin:0 0 6px;font-size:16px}
+p{line-height:1.6;color:#abc2d0;margin:0}small{font-size:12px;line-height:1.5;color:#a4bac9}
+.lead{font-size:15px;max-width:700px;margin-bottom:24px}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:25px 0}
+.tab{background:#112537;border:1px solid #2b4b60;border-radius:15px;text-align:left;padding:17px;color:#e9f7fb;display:grid;gap:4px;min-height:92px}
+.tab.selected{border:1px solid #6cf1d8;background:#103a40;box-shadow:inset 0 0 0 1px #6cf1d83d}
+.tab strong{font-size:14px}.tab span{color:#acc4cf;font-size:12px}
+.panel{background:#102436;border:1px solid #29485d;border-radius:20px;padding:24px;min-width:0}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.8fr);gap:18px}
+label{display:block;font-weight:700;font-size:13px;color:#d8ebf3;margin:18px 0 7px}
+input[type="text"],input[type="url"],input[type="password"],textarea,select{width:100%;padding:13px 14px;border:1px solid #426178;border-radius:11px;background:#091c2b;color:#f4fdff;outline:none}
+textarea{min-height:175px;resize:vertical;line-height:1.55}
+input:focus,textarea:focus,select:focus{border-color:#66efd6}
+.formhint{margin-top:6px}.settings{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:13px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;font-weight:500;line-height:1.5;color:#ccdee7;margin:15px 0}
+.check input{width:18px;height:18px;accent-color:#66efd6;flex:none;margin-top:2px}
+.btn{border-radius:11px;padding:13px 16px;border:1px solid #46677a;background:#203b50;color:#f1faff;font-weight:750}
+.btn.primary{background:#66efd6;color:#06332e;border-color:#66efd6}
+.btn.secondary{background:#152e41}
+.btn:enabled:hover{filter:brightness(1.08)}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:11px;margin-top:20px}
+.notice{padding:13px 14px;background:#173449;border:1px solid #345d70;border-radius:12px;font-size:13px;line-height:1.55;color:#dbedf5;margin-top:15px;overflow-wrap:anywhere}
+.notice.error{border-color:#af697a;background:#3f2536;color:#fff1f3}.notice.ok{border-color:#399884;background:#163b38}
+.statusline{display:flex;gap:9px;align-items:center;color:#cce4e7;font-size:13px;margin:14px 0}
+.dot{height:9px;width:9px;background:#6f93a6;border-radius:50%}.dot.ok{background:#68ead1}.dot.bad{background:#ff9ca5}
+.video{width:min(100%,285px);aspect-ratio:9/16;background:linear-gradient(145deg,#0a2c3b,#0a1425);border-radius:17px;display:block;margin:13px auto;border:1px solid #38576b;object-fit:contain}
+.placeholder{aspect-ratio:9/12;width:min(100%,260px);margin:17px auto;display:flex;align-items:center;justify-content:center;border:1px dashed #49697b;border-radius:15px;color:#91b0bf;text-align:center;padding:20px;line-height:1.7;font-size:13px;background:linear-gradient(140deg,#17364a,#0c2234)}
+.muted{color:#a6bbc9;font-size:13px}.hidden{display:none!important}.steps{display:grid;gap:10px;margin:20px 0}.step{padding:12px 13px;background:#0c1e2e;border:1px solid #2d4b60;border-radius:11px;font-size:13px;color:#bfd3df}.step b{color:#e9f7fb}
+.footer{border-top:1px solid #254658;margin-top:32px;padding-top:20px;color:#8ea8b8;font-size:12px}
+@media(max-width:780px){.layout{grid-template-columns:1fr}.panel{padding:18px}.tabs{gap:7px}.tab{padding:12px;min-height:100px}.tab strong{font-size:12px}.tab span{font-size:11px}}
+@media(max-width:390px){.wrap{padding:14px 12px 30px}.settings{grid-template-columns:1fr}.tab{min-height:118px}.pill{font-size:11px}}
 </style>
 </head>
 <body>
-<div class="shell"><aside class="side"><div class="brand">AIO<span>Clips</span> <small style="font-size:10px;color:#96a7c4">AI STUDIO</small></div>
-<nav class="nav" aria-label="Main navigation"><button class="active" data-view="studio">▣ &nbsp; Studio</button><button data-view="queue">◷ &nbsp; Approval queue</button><button data-view="settings">⚙ &nbsp; Settings</button></nav>
-<div class="side-foot">PROTOTYPE MODE<br>Local browser data only.<br>No account connection, AI generation, or live publishing.</div></aside>
-<main><div class="top"><div><h1 id="heading">Your creative workspace</h1><p id="subtitle">Turn moments into stories. You stay in control.</p></div><span class="pill">● Prototype · Offline</span></div>
-<section class="metrics" aria-label="Metrics"><div class="metric"><small>Experience</small><b>Studio</b></div><div class="metric"><small>Awaiting review</small><b id="pendingCount">1</b></div><div class="metric"><small>Approved locally</small><b id="approvedCount">0</b></div><div class="metric"><small>Published</small><b>0</b></div></section>
-<section class="panel" style="margin:0 0 20px" aria-labelledby="linkHeading">
-<h2 id="linkHeading">🔗 Paste video link</h2>
-<p>Start with a YouTube video reference. AIOClips validates the link locally; it does not download, analyze, or clip YouTube footage.</p>
-<form id="linkForm" style="margin-top:14px">
-<label for="videoLink">YouTube video URL</label>
-<input id="videoLink" type="url" inputmode="url" autocomplete="url" placeholder="https://www.youtube.com/watch?v=..." maxlength="2048" required>
-<div class="actions"><button class="btn primary" type="submit">Validate video link</button><button class="btn" type="button" id="clearLink">Clear</button></div>
+<main class="wrap">
+<header class="topbar"><div class="logo">AIO<b>Clips</b> AI<small>PRIVATE SHORTS STUDIO · ALPHA</small></div><span class="pill">● Original stories first · 540×960</span></header>
+<h1>From your words to a <span style="color:#66efd6">real Short.</span></h1>
+<p class="lead">Write your own story beats, render a vertical MP4 in the cloud, review it on your phone and download it. No PC required once your private renderer is deployed.</p>
+<div class="tabs" role="tablist" aria-label="Creation modes">
+<button type="button" class="tab selected" data-tab="story" role="tab" aria-selected="true"><strong>✦ Create original story</strong><span>MP4 rendering · needs connected service</span></button>
+<button type="button" class="tab" data-tab="reference" role="tab" aria-selected="false"><strong>↗ Paste reference URL</strong><span>Validation only · live</span></button>
+<button type="button" class="tab" data-tab="upload" role="tab" aria-selected="false"><strong>▣ Upload owned footage</strong><span>Needs connected service</span></button>
+</div>
+<div id="story" class="layout">
+<section class="panel" aria-labelledby="storyHeading">
+<h2 id="storyHeading">Original Story Creator</h2>
+<p class="muted">Only original text; no third-party video footage or music is imported.</p>
+<form id="storyForm">
+<label for="storyTitle">Video title</label><input id="storyTitle" type="text" placeholder="The discovery that changed everything" maxlength="110" required>
+<label for="beats">Story beats</label>
+<textarea id="beats" placeholder="Beat 1: Introduce the idea.&#10;Beat 2: Explain what happened.&#10;Beat 3: End with a takeaway." maxlength="1500" required></textarea>
+<small class="formhint">One beat per line · 1–8 lines · max 180 characters per beat.</small>
+<div class="settings"><div><label for="duration">Seconds per beat</label><select id="duration"><option value="3">3 seconds</option><option value="4">4 seconds</option><option value="5" selected>5 seconds</option><option value="6">6 seconds</option><option value="7">7 seconds</option><option value="8">8 seconds</option><option value="9">9 seconds</option><option value="10">10 seconds</option></select></div>
+<div><label>Format</label><div class="notice" style="margin:0;text-align:center;padding:12px 4px">9:16 · 540×960</div></div></div>
+<label class="check"><input type="checkbox" id="facts">I have checked the facts in my story.</label>
+<label class="check"><input type="checkbox" id="original">My title and story beats are independently written and non-sensitive.</label>
+<h3 style="margin-top:26px">Connect your private renderer</h3>
+<small>Backend URL is public configuration, not a secret. The owner passphrase stays only in this browser tab's memory, and must match the server's secret.</small>
+<label for="apiUrl">Backend HTTPS URL</label><input id="apiUrl" type="url" spellcheck="false" placeholder="https://your-service.onrender.com" autocomplete="off">
+<label for="ownerToken">Owner passphrase (never saved)</label><input id="ownerToken" type="password" autocomplete="off" spellcheck="false" placeholder="Enter your Render STUDIO_ACCESS_TOKEN">
+<div class="actions"><button type="button" class="btn secondary" id="connect">Check connection</button><button type="submit" class="btn primary" id="generate">✦ Generate MP4</button></div>
 </form>
-<div class="notice hidden" id="linkResult" role="status" aria-live="polite"></div>
+<div class="notice" id="appMessage" role="status" aria-live="polite">Renderer connection is required. No video is generated until a real server accepts your request.</div>
 </section>
-<section id="studioView" class="workspace">
-<div class="panel"><h2>Short concept preview</h2><div class="preview-layout"><div class="phone" role="img" aria-label="Illustrative football tactics pitch, not a rendered video"><div class="topline">AIOCLIPS • CREATOR STUDIO</div><div class="visual" aria-hidden="true"><div class="orb"><span></span></div><span class="footnote">ORIGINAL STORY · HIGHLIGHT</span></div><div class="caption" id="previewTitle">The Moment That Changed Everything</div><div class="watermark">DESIGN CONCEPT • NOT RENDERED</div></div>
-<div><span class="status" id="statusLabel">AWAITING REVIEW</span><h2 id="videoTitle" style="margin-top:12px">The Moment That Changed Everything</h2><p>This is a sample concept for testing the review experience. It is not generated or uploaded.</p><div class="notice" id="reviewMessage">Review the draft script, then approve, request changes, or reject. No action will publish anything.</div><div class="actions"><button class="btn primary" id="approve">✓ Approve</button><button class="btn" id="revise">↻ Request changes</button><button class="btn danger" id="reject">✕ Reject</button></div></div></div></div>
-<div class="panel"><h2>Script and metadata</h2><label for="titleInput">Video title</label><input id="titleInput" maxlength="110"><label for="scriptInput">Narration script</label><textarea id="scriptInput" maxlength="2000"></textarea><div class="actions"><button class="btn" id="save">Save draft revision</button><button class="btn" id="reset">Reset demo</button></div><div class="notice">Editing a previously approved draft revokes approval. Real production will require verified sources, licensed audio, video rendering and secure account authorization.</div></div>
-</section>
-<section id="queueView" class="hidden"><div class="panel"><h2>Approval queue</h2><div class="step"><b id="queueTitle">The Moment That Changed Everything</b><p id="queueStatus">Awaiting review</p><div class="actions"><button class="btn" id="openReview">Open review</button></div></div><div class="notice">Queue is a local prototype. No cloud sync, emails or background generation.</div></div></section>
-<section id="settingsView" class="hidden"><div class="panel"><h2>Automation preferences</h2><div class="steps"><div class="step"><b>Creative workspace</b><p>Planned: authorized footage analysis and original story creation</p></div><div class="step"><b>Timezone: Asia/Dhaka</b><p>Planned: save drafts, review outputs and schedule approved releases</p></div><div class="step"><b>Publishing: human approval required</b><p>Approval of the current verified video revision will be mandatory</p></div><div class="step"><b>Platforms: not connected</b><p>YouTube OAuth and analytics will be added to the production backend</p></div></div></div></section>
-<div class="footer">AIOClips AI Studio · Interactive design prototype · Backend processing is a separate service. Nothing here publishes or renders videos.</div>
-</main></div>
+<aside class="panel" aria-label="Output preview">
+<h2>Your Short</h2><p class="muted">The video appears here only after the server finishes generating a real MP4.</p>
+<div id="emptyPreview" class="placeholder">▶<br> Your rendered video preview will appear here</div>
+<video id="player" class="video hidden" controls playsinline preload="metadata" aria-label="Rendered Short"></video>
+<div class="statusline"><span class="dot" id="stateDot"></span><span id="jobStatus">Not connected</span></div>
+<div class="actions"><button type="button" id="download" class="btn primary" disabled>↓ Download MP4</button></div>
+<div class="steps"><div class="step"><b>1.</b> Write original title and beats</div><div class="step"><b>2.</b> Render a real Short on your server</div><div class="step"><b>3.</b> Preview and download your MP4</div></div>
+<small>Temporary exports expire automatically. Save the video promptly. Videos are never auto-published.</small>
+</aside>
+</div>
+<section id="reference" class="panel hidden"><h2>Paste reference URL</h2><p>A YouTube URL is only a reference; we do not download, analyze, or clip third-party footage.</p><form id="referenceForm"><label for="referenceUrl">YouTube watch, Shorts or youtu.be link</label><input id="referenceUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..." maxlength="2048"><div class="actions"><button class="btn primary" type="submit">Validate reference</button></div></form><div class="notice" id="referenceMessage" aria-live="polite">Paste a URL to validate its format. Reference-only validation is live and runs locally.</div></section>
+<section id="upload" class="panel hidden"><h2>Upload authorized footage</h2><div class="notice">Needs connected service — this workflow is not available on the public website yet. Uploads will be supported after the original-story workflow is tested end-to-end.</div><p style="margin-top:16px">Only upload video you own or have permission to edit. Pasting a URL is not authorization to reuse video.</p></section>
+<footer class="footer">AIOClips AI · Single-owner studio · No automatic publishing · <a href="https://github.com/AION-2000/AIOClips-AI" target="_blank" rel="noopener noreferrer">Source code</a> · <a href="https://github.com/AION-2000/AIOClips-AI/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">Security</a></footer>
+</main>
 <script>
-(()=>{'use strict';
-const KEY='aioclips-demo-v1';
-function youtubeReference(raw){
-  let u;
-  try{u=new URL(raw.trim())}catch{return null}
-  if(u.protocol!=='https:'||u.username||u.password)return null;
-  const host=u.hostname.toLowerCase().replace(/\\.$/,'');
-  let id=null;
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const DEFAULT_API = "https://aioclips-original-story.onrender.com";
+let blobUrl = null;
+let polling = false;
+$('apiUrl').value = localStorage.getItem('aioclips-api-url') || DEFAULT_API;
+function message(text, type='') {
+  const node = $('appMessage');
+  node.className = 'notice' + (type ? ' ' + type : '');
+  node.textContent = text;
+}
+function status(text, kind='') {
+  $('jobStatus').textContent = text;
+  $('stateDot').className = 'dot' + (kind ? ' ' + kind : '');
+}
+function parseUrl(raw) {
+  let url;
+  try { url = new URL(raw.trim()); } catch { throw Error('Enter a valid backend URL.'); }
+  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash ||
+      url.pathname !== '/' && url.pathname !== '') {
+    throw Error('Use the HTTPS service root URL with no path, credentials, query or fragment.');
+  }
+  return url.origin;
+}
+function apiBase() {
+  const origin = parseUrl($('apiUrl').value);
+  localStorage.setItem('aioclips-api-url', origin); // Public server URL only, never the passphrase.
+  return origin;
+}
+function token() {
+  const value = $('ownerToken').value;
+  if (!value) throw Error('Enter your owner passphrase first.');
+  return value;
+}
+async function request(path, options={}) {
+  const response = await fetch(apiBase() + path, {
+    ...options, credentials:'omit', cache:'no-store', referrerPolicy:'no-referrer',
+    headers: { ...(options.headers||{}), Authorization:'Bearer '+token() }
+  });
+  if (!response.ok) {
+    let detail = 'Server responded with HTTP '+response.status;
+    try {
+      const body = await response.json();
+      detail = Array.isArray(body.detail) ? body.detail.map(x=>x.msg).join('; ') : body.detail || detail;
+    } catch {}
+    throw Error(detail);
+  }
+  return response;
+}
+function showError(err) {
+  const text = err instanceof TypeError
+    ? 'Cannot reach the renderer. Check the HTTPS URL, deployment status and internet connection.'
+    : (err.message || String(err));
+  message(text, 'error');status('Error', 'bad');
+}
+function clearPreview(){
+  $('download').disabled=true;$('player').pause();$('player').removeAttribute('src');$('player').load();
+  $('player').classList.add('hidden');$('emptyPreview').classList.remove('hidden');
+  if (blobUrl) URL.revokeObjectURL(blobUrl);blobUrl=null;
+}
+$('connect').addEventListener('click', async () => {
+  $('connect').disabled=true;
+  status('Checking renderer…');message('Contacting HTTPS backend (a sleeping free server may take time to wake up).');
+  try {
+    const response=await fetch(apiBase()+'/v1/health', {cache:'no-store', credentials:'omit'});
+    if(!response.ok) throw Error('Backend health check failed (HTTP '+response.status+').');
+    const body=await response.json();
+    if(body.service!=='aioclips-original-story') throw Error('This is not the expected AIOClips renderer.');
+    if(!body.configured) throw Error('Server is online but STUDIO_ACCESS_TOKEN is not configured.');
+    message('Renderer online. Enter your passphrase and create your Short.', 'ok'); status('Server online','ok');
+  } catch(e){showError(e)}
+  finally {$('connect').disabled=false}
+});
+async function poll(jobId) {
+  const deadline=Date.now()+12*60*1000;
+  while (polling && Date.now()<deadline) {
+    const response=await request('/v1/story/jobs/'+encodeURIComponent(jobId));
+    const data=await response.json();
+    if (data.status==='ready') {
+      status('Downloading rendered MP4…');message('Rendering complete; retrieving your MP4.');
+      const file=await request('/v1/story/jobs/'+encodeURIComponent(jobId)+'/download');
+      const blob=await file.blob();
+      if(blob.type && !blob.type.includes('video/mp4')) throw Error('Server returned an unexpected file type.');
+      if(!blob.size) throw Error('Generated MP4 is empty.');
+      blobUrl=URL.createObjectURL(blob);
+      $('player').src=blobUrl;$('player').classList.remove('hidden');$('emptyPreview').classList.add('hidden');
+      $('download').disabled=false;
+      status('MP4 ready · '+(blob.size/1024/1024).toFixed(2)+' MB','ok');
+      message('Your real MP4 is ready. Preview or tap Download MP4.', 'ok');
+      return;
+    }
+    if(data.status==='error') throw Error(data.detail || 'The renderer failed.');
+    status(data.status==='queued'?'Queued for rendering':'Rendering MP4…');
+    await new Promise(resolve=>setTimeout(resolve,2500));
+  }
+  if(polling) throw Error('Rendering exceeded the polling window. Try again when the service is available.');
+}
+$('storyForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if(polling) return;
+  const title=$('storyTitle').value.trim();
+  const beats=$('beats').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(!title || !beats.length || beats.length>8 || beats.some(x=>x.length>180)) {
+    showError(Error('Provide a title and 1–8 nonempty story beats, at most 180 characters each.'));return;
+  }
+  if(!$('facts').checked || !$('original').checked) {
+    showError(Error('Confirm fact checking and independent authorship first.'));return;
+  }
+  try {
+    token();apiBase();clearPreview();polling=true;$('generate').disabled=true;
+    status('Submitting…');message('Submitting your original story to the private renderer.');
+    const response=await request('/v1/story/jobs',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({title,beats,seconds_per_beat:Number($('duration').value),
+        facts_verified:true,independently_written:true})
+    });
+    const job=await response.json();
+    if(!/^[0-9a-f]{32}$/.test(job.job_id||'')) throw Error('Server returned an invalid job identifier.');
+    message('Job accepted. Rendering '+job.resolution+' MP4. Keep this tab open.');
+    await poll(job.job_id);
+  } catch(e){showError(e)}
+  finally {polling=false;$('generate').disabled=false}
+});
+$('download').addEventListener('click', () => {
+  if(!blobUrl)return;
+  const a=document.createElement('a');a.href=blobUrl;a.download='AIOClips-Original-Short.mp4';
+  document.body.appendChild(a);a.click();a.remove();
+});
+function youtubeReference(raw) {
+  let u;try{u=new URL(raw.trim())}catch{return null}
+  if(u.protocol!=='https:' || u.username || u.password)return null;
+  const host=u.hostname.toLowerCase().replace(/\.$/,'');let id=null;
   if(host==='youtu.be'||host==='www.youtu.be')id=u.pathname.split('/')[1];
-  else if(host==='youtube.com'||host==='www.youtube.com'||host==='m.youtube.com'){
+  else if(['youtube.com','www.youtube.com','m.youtube.com'].includes(host)){
     const parts=u.pathname.split('/').filter(Boolean);
     if(u.pathname==='/watch')id=u.searchParams.get('v');
     else if(['shorts','live','embed'].includes(parts[0]))id=parts[1];
   }
-  return id&&/^[a-zA-Z0-9_-]{11}$/.test(id)?'https://www.youtube.com/watch?v='+id:null;
+  return id&&/^[A-Za-z0-9_-]{11}$/.test(id)?'https://www.youtube.com/watch?v='+id:null;
 }
-$('linkForm').addEventListener('submit',event=>{
+$('referenceForm').addEventListener('submit', event => {
   event.preventDefault();
-  const canonical=youtubeReference($('videoLink').value);
-  const result=$('linkResult');
-  result.classList.remove('hidden');
-  if(!canonical){
-    result.textContent='Invalid or unsupported link. Paste a YouTube watch, Shorts, live, or youtu.be video URL.';
-    return;
-  }
-  result.textContent='';
-  const intro=document.createElement('strong');intro.textContent='✓ Valid YouTube reference';
-  const desc=document.createElement('p');desc.textContent='This link is recognized, but the public preview cannot fetch or clip its footage. For actual highlights, use a video file you own or are licensed to edit in the separately hosted private studio.';
-  const link=document.createElement('a');link.href=canonical;link.textContent='Open original video';link.target='_blank';link.rel='noopener noreferrer';link.style.color='#9cf7e4';
-  result.append(intro,desc,link);
+  const valid=youtubeReference($('referenceUrl').value);
+  $('referenceMessage').textContent=valid
+    ? '✓ Valid YouTube reference: '+valid+'. It is NOT downloaded or clipped.'
+    : 'Unsupported URL. Use a valid YouTube watch, Shorts or youtu.be link.';
 });
-$('clearLink').addEventListener('click',()=>{$('videoLink').value='';$('linkResult').classList.add('hidden')});
-const sample={title:'The Moment That Changed Everything',script:'A remarkable moment unfolds.\nNew commentary explains what makes it worth sharing.\nEvery frame and caption should tell a clear story.',status:'review',revision:1,approvedRevision:null};
-let state;
-try{const stored=JSON.parse(localStorage.getItem(KEY)||'null');state=stored&&typeof stored.title==='string'&&typeof stored.script==='string'&&['review','approved','rejected','changes'].includes(stored.status)?stored:{...sample};}catch{state={...sample}}
-const $=id=>document.getElementById(id);
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}}
-function render(){
-$('titleInput').value=state.title;$('scriptInput').value=state.script;
-$('videoTitle').textContent=state.title;$('previewTitle').textContent=state.title;
-$('queueTitle').textContent=state.title;
-const statuses={review:'Awaiting review',approved:'Approved locally',rejected:'Rejected',changes:'Changes requested'};
-$('statusLabel').textContent=statuses[state.status].toUpperCase();
-$('queueStatus').textContent=statuses[state.status]+' · Revision '+state.revision;
-$('pendingCount').textContent=state.status==='review'?'1':'0';
-$('approvedCount').textContent=state.status==='approved'?'1':'0';
-$('approve').disabled=state.status!=='review';
-$('reject').disabled=state.status!=='review';
-$('revise').disabled=state.status!=='review';
-$('reviewMessage').textContent=state.status==='approved'?'This sample draft is approved locally. No upload or scheduling has occurred.':state.status==='rejected'?'Sample rejected. Edit and save to create a new draft.':state.status==='changes'?'Changes requested. Edit the script and save a new revision.':'Review the draft script, then approve, request changes, or reject. No action will publish anything.';
-}
-function transition(next){if(state.status!=='review')return;state.status=next;state.approvedRevision=next==='approved'?state.revision:null;persist();render()}
-$('approve').addEventListener('click',()=>transition('approved'));
-$('reject').addEventListener('click',()=>transition('rejected'));
-$('revise').addEventListener('click',()=>transition('changes'));
-$('save').addEventListener('click',()=>{
-const title=$('titleInput').value.trim(),script=$('scriptInput').value.trim();
-if(!title||!script){alert('Title and script are required.');return}
-if(title===state.title&&script===state.script){alert('No changes to save.');return}
-state={...state,title,script,status:'review',revision:state.revision+1,approvedRevision:null};
-persist();render();
+document.querySelectorAll('[data-tab]').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach(x=>{
+      const active=x===button;
+      x.classList.toggle('selected',active);x.setAttribute('aria-selected',String(active));
+      $(x.dataset.tab).classList.toggle('hidden',!active);
+    });
+  });
 });
-$('reset').addEventListener('click',()=>{if(!confirm('Reset the local demo?'))return;state={...sample};persist();render()});
-function view(name){
-for(const v of ['studio','queue','settings'])$(v+'View').classList.toggle('hidden',v!==name);
-document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
-$('heading').textContent=({studio:'Your creative workspace',queue:'Approval queue',settings:'Studio settings'})[name];
-$('subtitle').textContent=({studio:'Turn moments into stories. You stay in control.',queue:'Review your draft before it goes anywhere.',settings:'Production automation will connect here.'})[name];
-}
-document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
-$('openReview').addEventListener('click',()=>view('studio'));
-render();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
