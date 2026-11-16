@@ -40,7 +40,7 @@ AIOClips AI is a personal production workspace for discovering compelling segmen
 > [!IMPORTANT]
 > **Development alpha, not a production SaaS or copyright-clearing tool.** The GitHub Pages [site](https://aion-2000.github.io/AIOClips-AI/) has an original-story creator linked to a single-owner Render API. A backend owner token must be entered in memory to generate MP4. The existing footage upload/edit API is still a **separate local-only studio**.
 
-### Two creative paths
+### Three creative paths
 
 | | **Highlight Studio** | **Original Story Studio** |
 | :--- | :--- | :--- |
@@ -49,6 +49,17 @@ AIOClips AI is a personal production workspace for discovering compelling segmen
 | **Creative layers** | Headline, animated captions, optional voiceover | Original title, animated captions, optional voiceover |
 | **Source permissions** | Footage and audio reuse rights required | Reference link is never imported or downloaded |
 | **Review** | Human rights and content review | Human facts, originality and publication review |
+
+## Music to Video (new)
+
+Open the **[Android-friendly website](https://aion-2000.github.io/AIOClips-AI/)** and select **Music to Video**. Upload your own or commercially licensed MP3/WAV/M4A, record the commercial-use rights category, license name and proof URL, then generate a beat-synced MP4 with optional waveform visualization. The backend writes a private per-job rights manifest and credits files, exposes progress stages, and automatically removes expired files.
+
+- **Always usable without external AI/stock keys:** FFmpeg audio duration, BPM estimate and energy analysis, free rule-based mood/colors/scenes, generated animated gradients, crossfade and audio normalization. Final file presets are 1080×1920 and 1920×1080 (composed at lower internal resolution and upscaled).
+- **Optional hosted integrations:** Anthropic `claude-sonnet-5-5` scene planning with server-only `ANTHROPIC_API_KEY`; Pexels and Pixabay licensed stock lookup with server-only keys and per-scene credits. API calls and paid model tokens may incur charges.
+- **AI music generation is deliberately disabled.** The pluggable provider interface is ready, but no commercial-use-verified free audio generator is configured. Use the upload option.
+- **Known limitations:** approximate BPM/lyrics timing, no automatic vocal transcription, Render Free memory/CPU and ephemeral 24-hour-best-effort storage. Mobile live end-to-end acceptance is still pending. No automatic publication.
+
+See the **[Music to Video setup and licensing guide](docs/MUSIC_TO_VIDEO.md)** for exact Android instructions, environment variables, source credits and limits.
 
 ## Capabilities
 
@@ -68,6 +79,7 @@ AIOClips AI is a personal production workspace for discovering compelling segmen
 | YouTube OAuth publishing | ◻ Planned | No direct upload or automatic publishing |
 | Original-story cloud deployment | ✅ Service live | Render Free hosts isolated original-story API; actual Android browser video generation needs acceptance testing |
 | **Authorized footage upload & clipping** | ✅ Hosted beta | Upload an authorized file (including licensed third-party footage), review audio-energy / scene-cut suggestions, trim, add captions and render a 540×960 MP4. 40 MiB / 3-min beta limits; Android acceptance pending |
+| **Music to Video** | ✅ Tested in CI | Rights-gated upload → beat/energy analysis → offline or Anthropic theme → stock or FFmpeg visuals → MP4; real Android acceptance pending |
 
 <details>
 <summary><strong>What the app currently looks like</strong></summary>
@@ -187,6 +199,7 @@ Review [`SECURITY.md`](SECURITY.md) before exposing the service to the internet.
 
 | Resource | Why it matters |
 | :--- | :--- |
+| **[Music to Video setup](docs/MUSIC_TO_VIDEO.md)** | Music upload, rights proof, audio analysis, Render configuration, credits, limitations |
 | **[Android studio deployment](docs/MOBILE_STUDIO_DEPLOYMENT.md)** | Live backend, owner-token setup, usage, limits and test checklist |
 | **[Authorized footage workflow](docs/AUTHORIZED_FOOTAGE_WORKFLOW.md)** | Upload, heuristic highlight selection, licensed third-party clipping, rights and free-tier limits |
 | **[Project vision & progress](docs/PROJECT_VISION_AND_PROGRESS.md)** | Project vision, verified milestones and delivery backlog |
