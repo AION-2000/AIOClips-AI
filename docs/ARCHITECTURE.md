@@ -4,11 +4,24 @@
 
 ## Boundaries
 
-AIOClips has three distinct surfaces:
+AIOClips has four distinct surfaces:
 
-1. **Static GitHub Pages preview** (`index.html`) — a UX concept only. No API calls, FFmpeg processing, user sessions or cloud exports.
-2. **Private FastAPI studio** (`backend/app/server.py`, `studio.html`, `studio.js`) — the actual browser editor and API. Intended to run on a private Docker host.
-3. **FFmpeg processing library** — Python functions for video-analysis heuristics, animated captions, optional speech synthesis, and MP4 exports.
+1. **GitHub Pages mobile studio** (`index.html`) — public static HTML/JS, sends authorized original-story API requests directly to Render over HTTPS; passphrase stays in tab memory and is never committed or persisted.
+2. **Hosted original-story FastAPI API** (`backend/app/original_api.py`) — Render Free Docker, owner-token auth, one FFmpeg worker, time-limited in-memory jobs, private temporary files and a bearer-protected MP4 endpoint.
+3. **Legacy private footage studio** (`backend/app/server.py`, `studio.html`, `studio.js`) — separately runnable local upload/highlight/clip API, not exposed by the public Render deployment.
+4. **FFmpeg processing library** — original graphics, heuristic footage analysis, animated captions and optional speech synthesis.
+
+## Hosted original-story media flow (implemented)
+
+```mermaid
+flowchart LR
+    Pages["GitHub Pages mobile editor"] -->|"HTTPS, bearer token in Authorization header"| API["Render original_api.py"]
+    API -->|"Validated original text"| Queue["Bounded single-worker FFmpeg queue"]
+    Queue --> Video["Private temporary 540x960 MP4"]
+    API -->|"Authenticated status and MP4 download"| Pages
+```
+
+No reference video frames, external links or external audio are fetched in this hosted path. A background janitor deletes completed outputs after the configured TTL. Free-tier restarts can erase all job metadata and media. The Render service reports live; **physical Android end-to-end acceptance remains pending**.
 
 ## Media flow
 
@@ -49,7 +62,8 @@ flowchart TB
 
 | Component | Responsibility | Current limitation |
 | --- | --- | --- |
-| `server.py` | Authenticated REST endpoints, upload, job tracking | Shared token, in-memory job table |
+| `original_api.py` | Hosted authenticated original-story jobs, CORS, rate limits, cleanup | Single owner, ephemeral jobs, free-tier restarts |
+| `server.py` | Separate local footage upload/highlight/render API | Shared token, in-memory job table |
 | `match_links.py` | Canonicalize YouTube IDs | Does not fetch video information |
 | `url_safety.py` | Allowlisted URL preflight | No SSRF-safe fetcher implemented |
 | `highlights.py` | Scene-cut suggestions | Not semantically aware |
