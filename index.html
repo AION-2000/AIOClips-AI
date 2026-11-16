@@ -40,6 +40,16 @@ input,textarea{width:100%;background:#111e31;color:white;border:1px solid #3b4b6
 <div class="side-foot">PROTOTYPE MODE<br>Local browser data only.<br>No account connection, AI generation, or live publishing.</div></aside>
 <main><div class="top"><div><h1 id="heading">Your creative workspace</h1><p id="subtitle">Turn moments into stories. You stay in control.</p></div><span class="pill">● Prototype · Offline</span></div>
 <section class="metrics" aria-label="Metrics"><div class="metric"><small>Experience</small><b>Studio</b></div><div class="metric"><small>Awaiting review</small><b id="pendingCount">1</b></div><div class="metric"><small>Approved locally</small><b id="approvedCount">0</b></div><div class="metric"><small>Published</small><b>0</b></div></section>
+<section class="panel" style="margin:0 0 20px" aria-labelledby="linkHeading">
+<h2 id="linkHeading">🔗 Paste video link</h2>
+<p>Start with a YouTube video reference. AIOClips validates the link locally; it does not download, analyze, or clip YouTube footage.</p>
+<form id="linkForm" style="margin-top:14px">
+<label for="videoLink">YouTube video URL</label>
+<input id="videoLink" type="url" inputmode="url" autocomplete="url" placeholder="https://www.youtube.com/watch?v=..." maxlength="2048" required>
+<div class="actions"><button class="btn primary" type="submit">Validate video link</button><button class="btn" type="button" id="clearLink">Clear</button></div>
+</form>
+<div class="notice hidden" id="linkResult" role="status" aria-live="polite"></div>
+</section>
 <section id="studioView" class="workspace">
 <div class="panel"><h2>Short concept preview</h2><div class="preview-layout"><div class="phone" role="img" aria-label="Illustrative football tactics pitch, not a rendered video"><div class="topline">AIOCLIPS • CREATOR STUDIO</div><div class="visual" aria-hidden="true"><div class="orb"><span></span></div><span class="footnote">ORIGINAL STORY · HIGHLIGHT</span></div><div class="caption" id="previewTitle">The Moment That Changed Everything</div><div class="watermark">DESIGN CONCEPT • NOT RENDERED</div></div>
 <div><span class="status" id="statusLabel">AWAITING REVIEW</span><h2 id="videoTitle" style="margin-top:12px">The Moment That Changed Everything</h2><p>This is a sample concept for testing the review experience. It is not generated or uploaded.</p><div class="notice" id="reviewMessage">Review the draft script, then approve, request changes, or reject. No action will publish anything.</div><div class="actions"><button class="btn primary" id="approve">✓ Approve</button><button class="btn" id="revise">↻ Request changes</button><button class="btn danger" id="reject">✕ Reject</button></div></div></div></div>
@@ -52,6 +62,36 @@ input,textarea{width:100%;background:#111e31;color:white;border:1px solid #3b4b6
 <script>
 (()=>{'use strict';
 const KEY='aioclips-demo-v1';
+function youtubeReference(raw){
+  let u;
+  try{u=new URL(raw.trim())}catch{return null}
+  if(u.protocol!=='https:'||u.username||u.password)return null;
+  const host=u.hostname.toLowerCase().replace(/\\.$/,'');
+  let id=null;
+  if(host==='youtu.be'||host==='www.youtu.be')id=u.pathname.split('/')[1];
+  else if(host==='youtube.com'||host==='www.youtube.com'||host==='m.youtube.com'){
+    const parts=u.pathname.split('/').filter(Boolean);
+    if(u.pathname==='/watch')id=u.searchParams.get('v');
+    else if(['shorts','live','embed'].includes(parts[0]))id=parts[1];
+  }
+  return id&&/^[a-zA-Z0-9_-]{11}$/.test(id)?'https://www.youtube.com/watch?v='+id:null;
+}
+$('linkForm').addEventListener('submit',event=>{
+  event.preventDefault();
+  const canonical=youtubeReference($('videoLink').value);
+  const result=$('linkResult');
+  result.classList.remove('hidden');
+  if(!canonical){
+    result.textContent='Invalid or unsupported link. Paste a YouTube watch, Shorts, live, or youtu.be video URL.';
+    return;
+  }
+  result.textContent='';
+  const intro=document.createElement('strong');intro.textContent='✓ Valid YouTube reference';
+  const desc=document.createElement('p');desc.textContent='This link is recognized, but the public preview cannot fetch or clip its footage. For actual highlights, use a video file you own or are licensed to edit in the separately hosted private studio.';
+  const link=document.createElement('a');link.href=canonical;link.textContent='Open original video';link.target='_blank';link.rel='noopener noreferrer';link.style.color='#9cf7e4';
+  result.append(intro,desc,link);
+});
+$('clearLink').addEventListener('click',()=>{$('videoLink').value='';$('linkResult').classList.add('hidden')});
 const sample={title:'The Moment That Changed Everything',script:'A remarkable moment unfolds.\nNew commentary explains what makes it worth sharing.\nEvery frame and caption should tell a clear story.',status:'review',revision:1,approvedRevision:null};
 let state;
 try{const stored=JSON.parse(localStorage.getItem(KEY)||'null');state=stored&&typeof stored.title==='string'&&typeof stored.script==='string'&&['review','approved','rejected','changes'].includes(stored.status)?stored:{...sample};}catch{state={...sample}}
