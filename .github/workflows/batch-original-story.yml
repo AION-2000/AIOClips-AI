@@ -1,6 +1,14 @@
 name: AIOClips original story batch
 
 on:
+  # Automatic smoke render: a fixed, non-sensitive original story.
+  # This avoids asking the owner to click Run workflow after code changes.
+  push:
+    paths:
+      - ".github/workflows/batch-original-story.yml"
+      - "backend/batch_render.py"
+      - "backend/app/original_story.py"
+      - "backend/app/captions.py"
   workflow_dispatch:
     inputs:
       title:
@@ -40,14 +48,14 @@ concurrency:
 
 jobs:
   render:
-    if: ${{ inputs.confirm_public_content == true }}
+    if: ${{ github.event_name == 'push' || inputs.confirm_public_content == true }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
       PYTHONPATH: backend
-      TITLE: ${{ inputs.title }}
-      BEATS_JSON: ${{ inputs.beats_json }}
-      SECONDS_PER_BEAT: ${{ inputs.seconds_per_beat }}
+      TITLE: ${{ inputs.title || 'AIOClips AI Cloud Smoke Test' }}
+      BEATS_JSON: ${{ inputs.beats_json || '["An original story begins in the cloud.","The short renders without uploading private media."]' }}
+      SECONDS_PER_BEAT: ${{ inputs.seconds_per_beat || '3' }}
     steps:
       - name: Check out trusted repository code
         uses: actions/checkout@v4
