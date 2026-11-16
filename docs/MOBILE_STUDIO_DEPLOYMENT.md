@@ -1,6 +1,6 @@
 # Android Original-Story Studio — Deployment and Test Guide
 
-**Status (2026-11-16):** GitHub Pages deployed; Docker service created on Render Free and reported **live** by Render; backend tests passed. **Actual Android phone submission and download still require user acceptance testing** and must not be presented as verified until run.
+**Status (2026-11-17):** GitHub Pages and the Render Free Docker service host **Original Story** and **authorized footage** workflows. CI verifies both real FFmpeg render paths. **Physical Android-browser submission and download still require acceptance testing**.
 
 - **Web app:** https://aion-2000.github.io/AIOClips-AI/
 - **Private renderer HTTPS root:** https://aioclips-original-story.onrender.com
@@ -14,7 +14,13 @@
 | --- | --- | --- |
 | Create original story | Connected code, server provisioned; phone acceptance pending | Sends original title + 1–8 beats over HTTPS to an authenticated FFmpeg renderer |
 | Paste YouTube reference | Live browser-only validation | Checks URL syntax; does not download, summarize or clip videos |
-| Upload authorized footage | Needs connected service | Existing private backend supports it locally; public Pages does not expose it yet |
+| Upload authorized or licensed third-party footage | Hosted beta (phone acceptance pending) | Mobile upload, audio/scene highlight suggestions, timestamp selection and MP4 export; 40 MiB/3-min file limits |
+
+## Licensed third-party footage workflow
+
+The site also has **Clip permitted footage**. Upload a video file for which you have a valid reuse basis, describe the license/permission source, and confirm edit permission. The app suggests high-audio-energy or scene-change segments; select one, add a new title and commentary and render a 540×960 MP4 using the same authentication and status/download endpoints.
+
+See [Authorized footage workflow](AUTHORIZED_FOOTAGE_WORKFLOW.md) for detailed instructions, resource limits and legal/security boundaries. **YouTube video links are still reference-only and are never downloaded.**
 
 ## Security setup (single owner)
 
