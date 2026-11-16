@@ -63,11 +63,11 @@ AIOClips AI is a personal production workspace for discovering compelling segmen
 | Original Story mode | ✅ Implemented | Generates graphics from your verified, independently written text |
 | YouTube URL recognition | ✅ Implemented | Validates links only; **does not download video** |
 | Automatic goal/event understanding | ◻ Planned | No vision-based semantic event recognition yet |
-| Automatic link-to-video pipeline | ◻ Planned | No unattended research or source import |
+| Automatic link-to-video pipeline | ◻ Planned | YouTube links are reference-only; the hosted API accepts authorized uploaded files, not URL downloads |
 | Frame-accurate caption alignment | ◻ Planned | Captions currently use estimated timing |
 | YouTube OAuth publishing | ◻ Planned | No direct upload or automatic publishing |
 | Original-story cloud deployment | ✅ Service live | Render Free hosts isolated original-story API; actual Android browser video generation needs acceptance testing |
-| Public footage upload | ◻ Pending | Uploads intentionally unavailable from Pages until a secure connected service is built |
+| **Authorized footage upload & clipping** | ✅ Hosted beta | Upload an authorized file (including licensed third-party footage), review audio-energy / scene-cut suggestions, trim, add captions and render a 540×960 MP4. 40 MiB / 3-min beta limits; Android acceptance pending |
 
 <details>
 <summary><strong>What the app currently looks like</strong></summary>
@@ -118,7 +118,7 @@ docker run --rm \
   aioclips-studio
 ```
 
-The Docker image starts the focused **original-story API** on **http://localhost:8000/v1/health**. For the Android website, use the hosted HTTPS endpoint and enter the token only into the browser's password field. The older private footage-editing studio can still be run separately via `uvicorn app.server:app` from `backend/`.
+The Docker image starts the focused **original-story and authorized-footage API** on **http://localhost:8000/v1/health**. For the Android website, use the hosted HTTPS endpoint and enter the token only into the browser's password field. The older private footage-editing studio can still be run separately via `uvicorn app.server:app` from `backend/`.
 
 ### Option B — Python development
 
@@ -188,6 +188,7 @@ Review [`SECURITY.md`](SECURITY.md) before exposing the service to the internet.
 | Resource | Why it matters |
 | :--- | :--- |
 | **[Android studio deployment](docs/MOBILE_STUDIO_DEPLOYMENT.md)** | Live backend, owner-token setup, usage, limits and test checklist |
+| **[Authorized footage workflow](docs/AUTHORIZED_FOOTAGE_WORKFLOW.md)** | Upload, heuristic highlight selection, licensed third-party clipping, rights and free-tier limits |
 | **[Project vision & progress](docs/PROJECT_VISION_AND_PROGRESS.md)** | Project vision, verified milestones and delivery backlog |
 | [Architecture](docs/ARCHITECTURE.md) | Components, trust boundaries and real request flows |
 | [Roadmap](docs/ROADMAP.md) | Prioritized delivery plan with acceptance criteria |
