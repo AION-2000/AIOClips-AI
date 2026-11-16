@@ -27,18 +27,18 @@
 
 | Experience | Link | Current status |
 | :--- | :--- | :--- |
-| **Website preview** | **[Open AIOClips AI ↗](https://aion-2000.github.io/AIOClips-AI/)** | Public GitHub Pages UI prototype |
+| **Android-first website** | **[Open AIOClips AI ↗](https://aion-2000.github.io/AIOClips-AI/)** | Public interface connected in code to the Render original-story API; real-phone acceptance pending |
 | **Cloud video rendering** | **[GitHub Actions batch renderer ↗](https://github.com/AION-2000/AIOClips-AI/actions/workflows/batch-original-story.yml)** | Working original-story batch render; requires authorized GitHub workflow access |
-| **Private FastAPI studio** | Not publicly deployed | Runs locally or on a separately provisioned backend |
+| **Original-story HTTPS renderer** | **[Render service health ↗](https://aioclips-original-story.onrender.com/v1/health)** | Live service on Render Free; single-owner token required for jobs |
 
-> **Note:** The live website is a frontend preview only. It is **not yet connected** to the cloud renderer, so visitors cannot upload and generate video directly from that page.
+> **Current release:** GitHub Pages now offers a real original-story form wired to the separately hosted Render API. Render reports its service as live, and automated FFmpeg tests pass. **End-to-end testing on a physical Android phone is still pending.** Paste-URL mode is reference-only; authorized footage upload is not yet connected to the public site.
 
 ## Built for moments, not timelines
 
 AIOClips AI is a personal production workspace for discovering compelling segments in footage **you can legally reuse** and exporting them as polished 9:16 drafts. When a third-party video is only a reference, a separate **Original Story** workflow generates new graphics from independently written material—without downloading or reusing that video's frames or audio.
 
 > [!IMPORTANT]
-> **Development alpha, not a production SaaS or copyright-clearing tool.** The GitHub Pages [preview](https://aion-2000.github.io/AIOClips-AI/) is a **static UI prototype**. It is not connected to the FFmpeg backend. The functional API and private studio must be run locally or deployed separately.
+> **Development alpha, not a production SaaS or copyright-clearing tool.** The GitHub Pages [site](https://aion-2000.github.io/AIOClips-AI/) has an original-story creator linked to a single-owner Render API. A backend owner token must be entered in memory to generate MP4. The existing footage upload/edit API is still a **separate local-only studio**.
 
 ### Two creative paths
 
@@ -66,12 +66,13 @@ AIOClips AI is a personal production workspace for discovering compelling segmen
 | Automatic link-to-video pipeline | ◻ Planned | No unattended research or source import |
 | Frame-accurate caption alignment | ◻ Planned | Captions currently use estimated timing |
 | YouTube OAuth publishing | ◻ Planned | No direct upload or automatic publishing |
-| Public deployment | ◻ Pending | Requires a provisioned video-processing service |
+| Original-story cloud deployment | ✅ Service live | Render Free hosts isolated original-story API; actual Android browser video generation needs acceptance testing |
+| Public footage upload | ◻ Pending | Uploads intentionally unavailable from Pages until a secure connected service is built |
 
 <details>
 <summary><strong>What the app currently looks like</strong></summary>
 
-The private studio frontend is in [`backend/app/studio.html`](backend/app/studio.html) and [`backend/app/studio.js`](backend/app/studio.js). The public [GitHub Pages preview](https://aion-2000.github.io/AIOClips-AI/) is a separate static concept, **not a live demonstration of rendering or AI features**.
+The older footage-editing studio is in [`backend/app/studio.html`](backend/app/studio.html) and [`backend/app/studio.js`](backend/app/studio.js). The public [GitHub Pages studio](https://aion-2000.github.io/AIOClips-AI/) now submits original text jobs to the separate authenticated [`backend/app/original_api.py`](backend/app/original_api.py) service. No third-party footage is fetched.
 
 </details>
 
@@ -117,7 +118,7 @@ docker run --rm \
   aioclips-studio
 ```
 
-Open **http://localhost:8000** and enter the same studio token in the private login field. If you want AI voice, provide `OPENAI_API_KEY` as a **server-side** environment variable through a secure deployment mechanism; otherwise leave narration empty.
+The Docker image starts the focused **original-story API** on **http://localhost:8000/v1/health**. For the Android website, use the hosted HTTPS endpoint and enter the token only into the browser's password field. The older private footage-editing studio can still be run separately via `uvicorn app.server:app` from `backend/`.
 
 ### Option B — Python development
 
@@ -136,7 +137,7 @@ For Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`, set the toke
 Visit **http://127.0.0.1:8000**. Developer API docs are available at **http://127.0.0.1:8000/docs**.
 
 > [!NOTE]
-> To use the **real** studio on a phone outside your computer, deploy the Docker service behind HTTPS with persistent storage and authentication. The repository includes [`render.yaml`](render.yaml) as an example, but deployment is not yet active. Video rendering requires compute resources and may incur hosting charges.
+> A Render Free HTTPS original-story API is deployed at [aioclips-original-story.onrender.com](https://aioclips-original-story.onrender.com/v1/health). Follow the [Android guide](docs/MOBILE_STUDIO_DEPLOYMENT.md) for token entry and a complete manual acceptance test. Free hosting sleeps, restarts and loses temporary files; it is **not** reliable production storage.
 
 ## Project layout
 
@@ -145,7 +146,8 @@ AIOClips-AI/
 ├── assets/brand/             # Custom GitHub visual identity
 ├── backend/
 │   ├── app/
-│   │   ├── server.py         # FastAPI, authentication and render jobs
+│   │   ├── original_api.py   # Hosted private original-story API (540x960)
+│   │   ├── server.py         # Local authorized-footage API
 │   │   ├── studio.html/.js   # Mobile-friendly private editor
 │   │   ├── clip_studio.py    # Licensed-footage workflow
 │   │   ├── original_story.py # New visuals, no reference-footage reuse
@@ -185,7 +187,8 @@ Review [`SECURITY.md`](SECURITY.md) before exposing the service to the internet.
 
 | Resource | Why it matters |
 | :--- | :--- |
-| **[Project vision & progress](docs/PROJECT_VISION_AND_PROGRESS.md)** | What we have built, our final goal, verified milestones and next steps |
+| **[Android studio deployment](docs/MOBILE_STUDIO_DEPLOYMENT.md)** | Live backend, owner-token setup, usage, limits and test checklist |
+| **[Project vision & progress](docs/PROJECT_VISION_AND_PROGRESS.md)** | Project vision, verified milestones and delivery backlog |
 | [Architecture](docs/ARCHITECTURE.md) | Components, trust boundaries and real request flows |
 | [Roadmap](docs/ROADMAP.md) | Prioritized delivery plan with acceptance criteria |
 | [Deployment guide](docs/DEPLOYMENT.md) | Local development and hosting requirements |
