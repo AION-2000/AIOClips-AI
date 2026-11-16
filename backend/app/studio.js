@@ -137,3 +137,53 @@ $("download").addEventListener("click", () => {
   link.click();
   link.remove();
 });
+
+async function awaitOriginalExport(jobId) {
+  for (let attempt = 0; attempt < 240; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    const state = await json("/v1/renders/" + jobId);
+    if (state.status === "error") throw new Error(state.detail);
+    if (state.status !== "ready") {
+      $("status").textContent = "Rendering original video…";
+      continue;
+    }
+    const fileResponse = await request(state.download_url);
+    const blob = await fileResponse.blob();
+    if (exportedBlobUrl) URL.revokeObjectURL(exportedBlobUrl);
+    exportedBlobUrl = URL.createObjectURL(blob);
+    $("result").src = exportedBlobUrl;
+    $("download").disabled = false;
+    $("status").textContent = "Original MP4 ready · " + (blob.size / 1048576).toFixed(1) + " MB";
+    message("An original graphics video is ready for your review. No source frames or audio were reused.");
+    return;
+  }
+  throw new Error("Render still running or unavailable. Check the backend job status.");
+}
+
+$("originalGenerate").addEventListener("click", async () => {
+  const button = $("originalGenerate");
+  button.disabled = true;
+  $("download").disabled = true;
+  $("status").textContent = "Preparing new graphics…";
+  try {
+    const beats = $("originalBeats").value.split(/\r?\n/).map(b => b.trim()).filter(Boolean);
+    if (beats.length < 1 || beats.length > 8)
+      throw new Error("Enter between 1 and 8 original story beats, one per line.");
+    if (beats.some(beat => beat.length > 180))
+      throw new Error("Keep each story beat under 180 characters.");
+    const result = await post("/v1/original-stories", {
+      reference_url: $("originalUrl").value.trim() || null,
+      title: $("originalTitle").value.trim(),
+      beats,
+      narration_script: $("originalVoice").value.trim() || null,
+      facts_verified: $("originalFacts").checked,
+      independently_written: $("originalWritten").checked,
+      seconds_per_beat: 5
+    });
+    message("Creating original visuals and animated captions; any reference video remains untouched.");
+    await awaitOriginalExport(result.job_id);
+  } catch (error) {
+    message(error.message, true);
+    $("status").textContent = "Could not create original Short";
+  } finally { button.disabled = false; }
+});
