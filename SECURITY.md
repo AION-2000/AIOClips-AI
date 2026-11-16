@@ -29,6 +29,14 @@ The API rejects non-conforming JSON, allows 1–8 original beats and a maximum 8
 
 **Remaining limitations:** one shared token (no revocation per device), process-local rate limiter and job state, no private durable storage or malware/media sandbox, Render Free container restarts and limited compute. Treat this as a private personal prototype, not a multi-tenant or high-sensitivity service. Rotate a compromised token in Render **Environment**, and do not share it in screenshots, GitHub issues or workflow inputs. To test in an Android browser, follow [the mobile deployment guide](docs/MOBILE_STUDIO_DEPLOYMENT.md).
 
+## Hosted authorized-footage clipping beta
+
+The same single-owner Render API now accepts uploaded video files from a creator who declares an appropriate basis to edit and reuse them (owned, licensed, public domain or compatible Creative Commons) and supplies an evidence reference. No service fetches third-party social video URLs.
+
+The upload route requires the bearer token and consent, enforces an approximately 40 MiB request/file limit, validates media with FFprobe and rejects files longer than 180 seconds. Analysis uses FFmpeg audio energy or scene changes, not semantic AI understanding. Export clips are limited to 60 seconds and rendered at 540×960. Files are private on ephemeral local disk and deleted after their configured expiry; Render Free restarts can erase them earlier. Clip download requires the same token and is never published as a GitHub artifact.
+
+**Residual risks:** rights declarations are not independently verified; multimedia parsing can expose codec vulnerabilities; no dedicated FFmpeg sandbox, antivirus engine, persistent jobs or multiple-user authorization is provided. Do not upload confidential or highly sensitive footage. Mobile browser acceptance and production quotas still require real-device checks.
+
 ## Deployment baseline
 
 1. Use HTTPS and an up-to-date FFmpeg build.
