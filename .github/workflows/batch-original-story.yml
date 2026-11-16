@@ -1,0 +1,76 @@
+name: AIOClips original story batch
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Public/non-sensitive original title (1-110 chars)"
+        required: true
+        type: string
+      beats_json:
+        description: 'JSON array of 1-8 original, non-sensitive story beats (max 180 chars each)'
+        required: true
+        type: string
+        default: '["A new idea begins.","The story takes shape.","Here is the takeaway."]'
+      seconds_per_beat:
+        description: "Seconds per beat (3-10)"
+        required: true
+        default: "5"
+        type: choice
+        options:
+          - "3"
+          - "4"
+          - "5"
+          - "6"
+          - "7"
+          - "8"
+          - "9"
+          - "10"
+      confirm_public_content:
+        description: "I confirm this is original, verified, non-sensitive text suitable for a public repository"
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-story-batch-${{ github.actor }}
+  cancel-in-progress: false
+
+jobs:
+  render:
+    if: ${{ inputs.confirm_public_content == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: backend
+      TITLE: ${{ inputs.title }}
+      BEATS_JSON: ${{ inputs.beats_json }}
+      SECONDS_PER_BEAT: ${{ inputs.seconds_per_beat }}
+    steps:
+      - name: Check out trusted repository code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install FFmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Render original 9:16 MP4
+        run: |
+          python backend/batch_render.py \
+            --title "$TITLE" \
+            --beats-json "$BEATS_JSON" \
+            --seconds-per-beat "$SECONDS_PER_BEAT" \
+            --output batch-output/aioclips-original-story.mp4
+      - name: Upload finished MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: aioclips-original-story-${{ github.run_id }}
+          path: batch-output/aioclips-original-story.mp4
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
