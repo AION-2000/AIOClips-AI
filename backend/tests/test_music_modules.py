@@ -82,8 +82,11 @@ def test_stock_queries_credits_and_safe_downloads(tmp_path):
 def test_provider_fails_closed_for_imitations():
     with pytest.raises(ValueError):
         sanitize_generation_prompt("Make it sound like a famous performer")
+    with pytest.raises(ValueError):
+        sanitize_generation_prompt("Taylor Swift pop song")
+    assert sanitize_generation_prompt("Bright slow jazz ambient") == "bright slow jazz ambient"
     with pytest.raises(RuntimeError):
-        generate_music("some-fake-provider", "Bright slow jazz ambience", "/tmp/out.mp3")
+        generate_music("some-fake-provider", "Bright slow jazz ambient", "/tmp/out.mp3")
 
 
 def test_ffmpeg_builder_dimensions_filters_and_safety(tmp_path):
