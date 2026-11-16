@@ -54,10 +54,17 @@ input:focus,textarea:focus,select:focus{border-color:#66efd6}
 <header class="topbar"><div class="logo">AIO<b>Clips</b> AI<small>PRIVATE SHORTS STUDIO · ALPHA</small></div><span class="pill">● Original stories first · 540×960</span></header>
 <h1>From your words to a <span style="color:#66efd6">real Short.</span></h1>
 <p class="lead">Write your own story beats, render a vertical MP4 in the cloud, review it on your phone and download it. No PC required once your private renderer is deployed.</p>
+<section class="panel" style="margin-bottom:16px" aria-labelledby="connectionHeading">
+<h2 id="connectionHeading">Connect your private renderer</h2>
+<p class="muted">One connection for Original Story and authorized-footage clips. Your passphrase stays in this browser tab and is never stored.</p>
+<div class="settings"><div><label for="apiUrl">Backend HTTPS URL</label><input id="apiUrl" type="url" spellcheck="false" placeholder="https://your-service.onrender.com" autocomplete="off"></div>
+<div><label for="ownerToken">Owner passphrase</label><input id="ownerToken" type="password" autocomplete="off" spellcheck="false" placeholder="Private access token"></div></div>
+<div class="actions"><button type="button" class="btn secondary" id="connect">Check connection</button><span id="connectionStatus" class="muted">Not checked</span></div>
+</section>
 <div class="tabs" role="tablist" aria-label="Creation modes">
 <button type="button" class="tab selected" data-tab="story" role="tab" aria-selected="true"><strong>✦ Create original story</strong><span>MP4 rendering · needs connected service</span></button>
 <button type="button" class="tab" data-tab="reference" role="tab" aria-selected="false"><strong>↗ Paste reference URL</strong><span>Validation only · live</span></button>
-<button type="button" class="tab" data-tab="upload" role="tab" aria-selected="false"><strong>▣ Upload owned footage</strong><span>Needs connected service</span></button>
+<button type="button" class="tab" data-tab="upload" role="tab" aria-selected="false"><strong>▣ Clip permitted footage</strong><span>Upload · analyze · render MP4</span></button>
 </div>
 <div id="story" class="layout">
 <section class="panel" aria-labelledby="storyHeading">
@@ -72,11 +79,7 @@ input:focus,textarea:focus,select:focus{border-color:#66efd6}
 <div><label>Format</label><div class="notice" style="margin:0;text-align:center;padding:12px 4px">9:16 · 540×960</div></div></div>
 <label class="check"><input type="checkbox" id="facts">I have checked the facts in my story.</label>
 <label class="check"><input type="checkbox" id="original">My title and story beats are independently written and non-sensitive.</label>
-<h3 style="margin-top:26px">Connect your private renderer</h3>
-<small>Backend URL is public configuration, not a secret. The owner passphrase stays only in this browser tab's memory, and must match the server's secret.</small>
-<label for="apiUrl">Backend HTTPS URL</label><input id="apiUrl" type="url" spellcheck="false" placeholder="https://your-service.onrender.com" autocomplete="off">
-<label for="ownerToken">Owner passphrase (never saved)</label><input id="ownerToken" type="password" autocomplete="off" spellcheck="false" placeholder="Enter your Render STUDIO_ACCESS_TOKEN">
-<div class="actions"><button type="button" class="btn secondary" id="connect">Check connection</button><button type="submit" class="btn primary" id="generate">✦ Generate MP4</button></div>
+<div class="actions"><button type="submit" class="btn primary" id="generate">✦ Generate MP4</button></div>
 </form>
 <div class="notice" id="appMessage" role="status" aria-live="polite">Renderer connection is required. No video is generated until a real server accepts your request.</div>
 </section>
@@ -91,7 +94,54 @@ input:focus,textarea:focus,select:focus{border-color:#66efd6}
 </aside>
 </div>
 <section id="reference" class="panel hidden"><h2>Paste reference URL</h2><p>A YouTube URL is only a reference; we do not download, analyze, or clip third-party footage.</p><form id="referenceForm"><label for="referenceUrl">YouTube watch, Shorts or youtu.be link</label><input id="referenceUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..." maxlength="2048"><div class="actions"><button class="btn primary" type="submit">Validate reference</button></div></form><div class="notice" id="referenceMessage" aria-live="polite">Paste a URL to validate its format. Reference-only validation is live and runs locally.</div></section>
-<section id="upload" class="panel hidden"><h2>Upload authorized footage</h2><div class="notice">Needs connected service — this workflow is not available on the public website yet. Uploads will be supported after the original-story workflow is tested end-to-end.</div><p style="margin-top:16px">Only upload video you own or have permission to edit. Pasting a URL is not authorization to reuse video.</p></section>
+<section id="upload" class="layout hidden">
+<div class="panel">
+<h2>Analyze & clip authorized footage</h2>
+<p class="muted">Works with videos you own, have a license for, public-domain footage or Creative Commons footage whose terms permit this reuse. Third-party links are not automatically downloaded.</p>
+<div class="notice">Private beta limits: up to <strong>40 MB</strong> and <strong>3 minutes</strong> per uploaded video. Uploads and outputs are temporary. The server analyzes audio energy or scene transitions—not AI understanding of goals or events.</div>
+<form id="uploadForm">
+<label for="footageFile">Choose a video file</label>
+<input id="footageFile" name="video" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-matroska" required>
+<label for="footageRights">How may you reuse this footage?</label>
+<select id="footageRights" required>
+<option value="licensed">Licensed / explicit permission from owner</option>
+<option value="owned">I own this footage</option>
+<option value="public_domain">Public domain</option>
+<option value="compatible_creative_commons">Creative Commons license allowing reuse</option>
+</select>
+<label for="rightsEvidence">Source and permission/license evidence</label>
+<textarea id="rightsEvidence" maxlength="600" style="min-height:84px" placeholder="Original creator, license URL or written permission reference" required></textarea>
+<label class="check"><input id="editPermission" type="checkbox" required>I confirm I may edit and reuse this material under the applicable terms.</label>
+<button type="submit" class="btn primary" id="uploadButton">↑ Upload & analyze moments</button>
+</form>
+<div id="uploadMessage" role="status" aria-live="polite" class="notice">Upload a video to see timestamped highlight suggestions.</div>
+<div id="clipEditor" class="hidden">
+<h3 style="margin-top:22px">Select a moment</h3>
+<div id="suggestions" class="steps"></div>
+<p class="muted">Select a suggestion or edit your clip times manually. Scores reflect energy / cuts, not event meaning.</p>
+<form id="clipForm">
+<div class="settings">
+<div><label for="clipStart">Start (seconds)</label><input id="clipStart" type="number" min="0" step="0.01" required></div>
+<div><label for="clipEnd">End (seconds)</label><input id="clipEnd" type="number" min="1" step="0.01" required></div>
+</div>
+<label for="clipHeadline">Short headline</label><input id="clipHeadline" type="text" maxlength="90" placeholder="A remarkable moment" required pattern="[A-Za-z0-9 _.,!?-]{1,90}">
+<label for="clipCaption">Original on-screen commentary</label><textarea id="clipCaption" maxlength="600" required style="min-height:90px" placeholder="Write your own description of this selected clip."></textarea>
+<label class="check"><input id="publishPermission" type="checkbox" required>I confirm my permissions cover this edited clip and publication. I will review it before publishing.</label>
+<div class="actions"><button type="submit" class="btn primary" id="clipButton">✂ Render selected Short</button></div>
+</form>
+</div>
+</div>
+<aside class="panel">
+<h2>Footage & clip preview</h2>
+<p class="muted">Review the uploaded video locally first. The finished vertical clip appears after an actual FFmpeg render.</p>
+<video id="sourcePreview" class="video hidden" playsinline controls preload="metadata" aria-label="Selected source footage"></video>
+<div id="clipEmpty" class="placeholder">Your edited 9:16 video appears here after rendering</div>
+<video id="clipPlayer" class="video hidden" playsinline controls preload="metadata" aria-label="Rendered footage Short"></video>
+<div class="statusline"><span class="dot" id="clipDot"></span><span id="clipStatus">No footage uploaded</span></div>
+<div class="actions"><button id="clipDownload" class="btn primary" disabled type="button">↓ Download edited MP4</button></div>
+<small>Only you can retrieve the file using your owner passphrase. Files expire automatically; save approved results promptly.</small>
+</aside>
+</section>
 <footer class="footer">AIOClips AI · Single-owner studio · No automatic publishing · <a href="https://github.com/AION-2000/AIOClips-AI" target="_blank" rel="noopener noreferrer">Source code</a> · <a href="https://github.com/AION-2000/AIOClips-AI/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">Security</a></footer>
 </main>
 <script>
@@ -166,7 +216,8 @@ $('connect').addEventListener('click', async () => {
     if(body.service!=='aioclips-original-story') throw Error('This is not the expected AIOClips renderer.');
     if(!body.configured) throw Error('Server is online but STUDIO_ACCESS_TOKEN is not configured.');
     message('Renderer online. Enter your passphrase and create your Short.', 'ok'); status('Server online','ok');
-  } catch(e){showError(e)}
+    $('connectionStatus').textContent='Renderer online';
+  } catch(e){showError(e);$('connectionStatus').textContent='Connection failed'}
   finally {$('connect').disabled=false}
 });
 async function poll(jobId) {
@@ -224,6 +275,148 @@ $('download').addEventListener('click', () => {
   const a=document.createElement('a');a.href=blobUrl;a.download='AIOClips-Original-Short.mp4';
   document.body.appendChild(a);a.click();a.remove();
 });
+
+let activeAsset = null;
+let footageLength = 0;
+let footageRunning = false;
+let clipBlobUrl = null;
+let sourceBlobUrl = null;
+function footageStatus(text, error=false) {
+  $('clipStatus').textContent=text;
+  $('clipDot').className='dot'+(error?' bad':' ok');
+  $('uploadMessage').textContent=text;
+  $('uploadMessage').className='notice'+(error?' error':'');
+}
+function footageError(error) {
+  const text=error instanceof TypeError
+    ? 'Network connection failed. Check Render availability and your HTTPS URL.'
+    : (error.message || String(error));
+  footageStatus(text,true);
+}
+function clearClipOutput(){
+  $('clipDownload').disabled=true;
+  $('clipPlayer').pause();$('clipPlayer').removeAttribute('src');$('clipPlayer').load();
+  $('clipPlayer').classList.add('hidden');$('clipEmpty').classList.remove('hidden');
+  if(clipBlobUrl)URL.revokeObjectURL(clipBlobUrl);
+  clipBlobUrl=null;
+}
+$('footageFile').addEventListener('change',()=>{
+  const file=$('footageFile').files[0];
+  activeAsset=null;$('clipEditor').classList.add('hidden');
+  clearClipOutput();
+  $('sourcePreview').pause();$('sourcePreview').removeAttribute('src');$('sourcePreview').load();
+  if(sourceBlobUrl)URL.revokeObjectURL(sourceBlobUrl);
+  sourceBlobUrl=null;
+  if(file){
+    sourceBlobUrl=URL.createObjectURL(file);
+    $('sourcePreview').src=sourceBlobUrl;$('sourcePreview').classList.remove('hidden');
+    footageStatus('Selected '+file.name+' ('+(file.size/1024/1024).toFixed(1)+' MB). Confirm rights then upload.');
+  }else{
+    $('sourcePreview').classList.add('hidden');
+    footageStatus('Choose a video file.');
+  }
+});
+$('uploadForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  if(footageRunning)return;
+  const file=$('footageFile').files[0];
+  if(!file){footageError(Error('Select a video first.'));return}
+  if(file.size>40*1024*1024){footageError(Error('This beta supports files up to 40 MB.'));return}
+  if(!$('editPermission').checked){footageError(Error('You must confirm permission to reuse the file.'));return}
+  if($('rightsEvidence').value.trim().length<8){footageError(Error('Provide a license/source evidence reference.'));return}
+  footageRunning=true;$('uploadButton').disabled=true;
+  activeAsset=null;$('clipEditor').classList.add('hidden');clearClipOutput();
+  try{
+    token();apiBase();
+    footageStatus('Uploading private media. Keep this tab open…');
+    const form=new FormData();
+    form.append('video',file,file.name);
+    form.append('rights',$('footageRights').value);
+    form.append('rights_evidence',$('rightsEvidence').value.trim());
+    form.append('permission_to_edit','true');
+    const uploaded=await(await request('/v1/footage/uploads',{method:'POST',body:form})).json();
+    if(!/^[0-9a-f]{32}$/.test(uploaded.asset_id||''))throw Error('Unexpected upload ID.');
+    activeAsset=uploaded.asset_id;footageLength=uploaded.duration;
+    footageStatus('Uploaded '+footageLength+' seconds. Analyzing scene or audio energy…');
+    const response=await request('/v1/footage/'+activeAsset+'/highlights',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({seconds:Math.min(15,footageLength),limit:5})
+    });
+    const analyzed=await response.json();
+    const list=$('suggestions');list.replaceChildren();
+    let moments=analyzed.moments||[];
+    if(!moments.length){
+      moments=[{start:0,end:Math.min(15,footageLength),kind:'manual',score:0}];
+    }
+    moments.forEach((moment,index)=>{
+      const b=document.createElement('button');b.type='button';b.className='btn secondary';
+      b.style.textAlign='left';
+      b.textContent=(index+1)+'. '+Number(moment.start).toFixed(1)+'–'+Number(moment.end).toFixed(1)+'s · '+moment.kind.replaceAll('_',' ');
+      b.addEventListener('click',()=>{
+        $('clipStart').value=Number(moment.start).toFixed(2);
+        $('clipEnd').value=Number(moment.end).toFixed(2);
+        Array.from(list.children).forEach(el=>el.classList.remove('primary'));
+        b.classList.add('primary');
+        $('sourcePreview').currentTime=Math.max(0,moment.start);
+      });
+      list.appendChild(b);
+      if(index===0)b.click();
+    });
+    $('clipEditor').classList.remove('hidden');
+    footageStatus('Analysis complete. Review the suggestions, adjust times, then render your clip.');
+  }catch(error){footageError(error)}
+  finally{footageRunning=false;$('uploadButton').disabled=false}
+});
+$('clipForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  if(footageRunning)return;
+  if(!activeAsset){footageError(Error('Upload footage first.'));return}
+  const start=Number($('clipStart').value),end=Number($('clipEnd').value);
+  if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end-start<1||end-start>60||end>footageLength+0.001){
+    footageError(Error('Select 1–60 seconds within your uploaded footage.'));return;
+  }
+  if(!$('publishPermission').checked){footageError(Error('Confirm publication permission before rendering.'));return}
+  footageRunning=true;$('clipButton').disabled=true;clearClipOutput();
+  try{
+    footageStatus('Submitting your clip render…');
+    const result=await(await request('/v1/footage/'+activeAsset+'/clips',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        start,end,headline:$('clipHeadline').value.trim(),
+        caption_script:$('clipCaption').value.trim(),
+        permission_to_publish:true
+      })
+    })).json();
+    if(!/^[0-9a-f]{32}$/.test(result.job_id||''))throw Error('Invalid job response.');
+    const deadline=Date.now()+12*60*1000;
+    while(Date.now()<deadline){
+      const data=await(await request('/v1/story/jobs/'+result.job_id)).json();
+      if(data.status==='error')throw Error(data.detail||'Clip render failed.');
+      if(data.status==='ready'){
+        footageStatus('Render ready. Downloading MP4…');
+        const file=await request('/v1/story/jobs/'+result.job_id+'/download');
+        const blob=await file.blob();
+        if(!blob.size||!blob.type.includes('video/mp4'))throw Error('Invalid MP4 response.');
+        clipBlobUrl=URL.createObjectURL(blob);
+        $('clipPlayer').src=clipBlobUrl;
+        $('clipPlayer').classList.remove('hidden');$('clipEmpty').classList.add('hidden');
+        $('clipDownload').disabled=false;
+        footageStatus('Edited MP4 ready. Preview and download.');
+        return;
+      }
+      footageStatus('Rendering vertical Short…');
+      await new Promise(resolve=>setTimeout(resolve,2500));
+    }
+    throw Error('Render timed out. Try again later.');
+  }catch(error){footageError(error)}
+  finally{footageRunning=false;$('clipButton').disabled=false}
+});
+$('clipDownload').addEventListener('click',()=>{
+  if(!clipBlobUrl)return;
+  const link=document.createElement('a');link.href=clipBlobUrl;link.download='AIOClips-Edited-Footage.mp4';
+  document.body.appendChild(link);link.click();link.remove();
+});
+
 function youtubeReference(raw) {
   let u;try{u=new URL(raw.trim())}catch{return null}
   if(u.protocol!=='https:' || u.username || u.password)return null;
