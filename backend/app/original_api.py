@@ -449,3 +449,8 @@ def create_footage_clip(asset_id: str, body: ClipInput, request: Request):
         )
     return {"job_id": job_id, "status": "queued", "resolution": "540x960",
             "seconds": round(body.end - body.start, 2)}
+
+
+# Music to Video is an additive router; all existing routes and job types remain intact.
+from .music.api import mount_music
+mount_music(app, require_owner, _limit, EXECUTOR, JOBS)
