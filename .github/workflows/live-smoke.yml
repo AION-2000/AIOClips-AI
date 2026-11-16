@@ -1,0 +1,67 @@
+name: Live website and API smoke (no secrets)
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/live-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify public mobile studio HTML
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --retry 3 \
+            --max-time 90 "https://aion-2000.github.io/AIOClips-AI/" -o index.html
+          grep -q 'id="storyForm"' index.html
+          grep -q 'id="download"' index.html
+          echo "Live GitHub Pages studio contains real rendering controls"
+
+      - name: Check Render HTTPS health and token configuration
+        run: |
+          set -euo pipefail
+          for attempt in {1..6}; do
+            if curl --fail --silent --show-error --max-time 120 \
+              "https://aioclips-original-story.onrender.com/v1/health" -o health.json; then
+              break
+            fi
+            sleep 12
+          done
+          python3 - <<'PY'
+          import json
+          with open("health.json", encoding="utf-8") as f:
+              data = json.load(f)
+          assert data["status"] == "ok", data
+          assert data["service"] == "aioclips-original-story", data
+          assert data["configured"] is True, "Render must have private owner token configured"
+          print("Render HTTPS API is live and owner token is configured")
+          PY
+
+      - name: Verify unauthenticated jobs cannot be submitted
+        run: |
+          set -euo pipefail
+          code=$(curl --silent --show-error --max-time 90 \
+            -o /tmp/unauthorized.json -w '%{http_code}' \
+            -X POST "https://aioclips-original-story.onrender.com/v1/story/jobs" \
+            -H 'Content-Type: application/json' \
+            -d '{"title":"Safety check","beats":["No render should be accepted"],"seconds_per_beat":3,"facts_verified":true,"independently_written":true}')
+          test "$code" = "401"
+          echo "Anonymous render requests rejected with HTTP $code"
+
+      - name: Verify production CORS allowlist
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 90 \
+            -X OPTIONS "https://aioclips-original-story.onrender.com/v1/story/jobs" \
+            -H 'Origin: https://aion-2000.github.io' \
+            -H 'Access-Control-Request-Method: POST' \
+            -H 'Access-Control-Request-Headers: authorization,content-type' \
+            -D /tmp/cors.txt -o /dev/null
+          grep -qi '^access-control-allow-origin: https://aion-2000.github.io' /tmp/cors.txt
+          echo "Owner website origin accepted"
