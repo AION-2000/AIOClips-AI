@@ -89,13 +89,16 @@ jobs:
       - name: Verify anonymous Music to Video endpoints are private
         run: |
           set -euo pipefail
-          for endpoint in "config" "jobs"; do
-            code=$(curl --silent --show-error --max-time 90 \
-              -o /tmp/music-denial.json -w '%{http_code}' \
-              "https://aioclips-original-story.onrender.com/v1/music/$endpoint")
-            test "$code" = "401"
-            echo "Unauthenticated /v1/music/$endpoint denied: HTTP $code"
-          done
+          code=$(curl --silent --show-error --max-time 90 \
+            -o /tmp/music-config-denial.json -w '%{http_code}' \
+            "https://aioclips-original-story.onrender.com/v1/music/config")
+          test "$code" = "401"
+          echo "Anonymous music configuration denied: HTTP $code"
+          code=$(curl --silent --show-error --max-time 90 \
+            -o /tmp/music-create-denial.json -w '%{http_code}' \
+            -X POST "https://aioclips-original-story.onrender.com/v1/music/jobs")
+          test "$code" = "401"
+          echo "Anonymous music POST upload denied: HTTP $code"
           curl --fail --silent --show-error --max-time 90 \
             -X OPTIONS "https://aioclips-original-story.onrender.com/v1/music/jobs" \
             -H 'Origin: https://aion-2000.github.io' \
