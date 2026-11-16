@@ -21,6 +21,7 @@ from starlette.concurrency import run_in_threadpool
 from .clip_studio import FootageDeclaration, FootageRights, make_review_clip, suggest_video_moments
 from .match_clips import duration_seconds
 from .match_links import canonical_youtube_url
+from .original_story import render_original_story
 
 ROOT = Path(os.environ.get("STUDIO_DATA_DIR", "/tmp/aioclips-data")).resolve()
 MAX_UPLOAD = 700 * 1024 * 1024
@@ -179,6 +180,53 @@ def render(body: RenderRequest):
     )
     JOBS[job_id] = (future, output)
     return {"job_id": job_id, "status": "queued"}
+
+
+class OriginalStoryRequest(BaseModel):
+    reference_url: str | None = Field(default=None, max_length=2048)
+    title: str = Field(min_length=1, max_length=110)
+    beats: list[str] = Field(min_length=1, max_length=8)
+    narration_script: str | None = Field(default=None, max_length=3000)
+    seconds_per_beat: int = Field(default=5, ge=3, le=10)
+    facts_verified: bool
+    independently_written: bool
+
+
+@app.post("/v1/original-stories", dependencies=[Depends(authenticated)], status_code=202)
+def original_story(body: OriginalStoryRequest):
+    """Create original motion graphics without reproducing third-party footage.
+
+    The optional YouTube URL is a reference only and is never fetched.
+    Original expression and fact verification remain human responsibilities.
+    """
+    if not body.facts_verified or not body.independently_written:
+        raise HTTPException(
+            status_code=403,
+            detail="Verify the facts and confirm your story is independently written.",
+        )
+    if body.reference_url:
+        try:
+            canonical_youtube_url(body.reference_url)
+        except (ValueError, TypeError) as exc:
+            raise HTTPException(status_code=422, detail="Invalid YouTube reference") from exc
+    if any(not beat.strip() or len(beat) > 180 for beat in body.beats):
+        raise HTTPException(status_code=422, detail="Each story beat must be 1-180 characters")
+    ROOT.joinpath("exports").mkdir(parents=True, exist_ok=True)
+    job_id = secrets.token_hex(16)
+    output = ROOT / "exports" / f"{job_id}.mp4"
+    future = POOL.submit(
+        render_original_story,
+        title=body.title,
+        beats=body.beats,
+        output=output,
+        narration_script=body.narration_script,
+        seconds_per_beat=body.seconds_per_beat,
+    )
+    JOBS[job_id] = (future, output)
+    return {
+        "job_id": job_id, "status": "queued", "source": "original graphics only",
+        "note": "No frames or audio are downloaded or copied from the reference.",
+    }
 
 
 @app.get("/v1/renders/{job_id}", dependencies=[Depends(authenticated)])
