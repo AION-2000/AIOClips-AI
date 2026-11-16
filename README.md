@@ -1,71 +1,185 @@
-# AIOClips AI
+<div align="center">
+  <img src="assets/brand/hero.svg" alt="AIOClips AI — Find the moment. Shape the story." width="100%" />
 
-A private, rights-aware video clipping studio. **Development alpha — not an automatic copyright-clearing service.**
+  <br />
 
-## Two publishing workflows
+  **A private, rights-aware studio for turning authorized footage and independently written stories into vertical video.**
 
-### 1. Authorized source clip
+  <a href="https://github.com/AION-2000/AIOClips-AI/actions/workflows/backend-tests.yml"><img alt="Backend checks" src="https://github.com/AION-2000/AIOClips-AI/actions/workflows/backend-tests.yml/badge.svg" /></a>
+  <img alt="Python 3.11" src="https://img.shields.io/badge/Python-3.11-2C5166?style=flat-square&logo=python&logoColor=white" />
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-API-11856E?style=flat-square&logo=fastapi&logoColor=white" />
+  <img alt="FFmpeg" src="https://img.shields.io/badge/FFmpeg-rendering-2C5166?style=flat-square" />
+  <img alt="Status: Alpha" src="https://img.shields.io/badge/Status-Alpha-E8B04E?style=flat-square" />
 
-Use footage and its sound only when you have appropriate reuse rights. Upload it and select energetic candidate moments, then add captions and optional AI narration.
+  <br /><br />
 
-### 2. Original story (reference-only)
+  [**Get started**](#quick-start) · [**Explore capabilities**](#capabilities) · [**Architecture**](docs/ARCHITECTURE.md) · [**Roadmap**](docs/ROADMAP.md) · [**Security**](SECURITY.md)
 
-Have a YouTube reference but **no** right to reuse its footage? Open the private studio's **Original Short** section instead. Provide a verified factual summary in your own words, a distinctive title, and 1–8 independently written creative story beats. The backend generates brand-new geometric visuals, karaoke-style text overlays and optional AI narration **without fetching or displaying any video frames or audio from the reference**. The reference link is only validated; the app does not automatically watch, research or summarize the linked video.
+</div>
 
-This is a safer alternative to re-uploading another person's video. It is not a copyright clearance service. Facts must be checked, original material must not imitate protected expression, and every draft must be reviewed before publication. A watermark, crop, angle adjustment, or different voice does not magically establish ownership. Repetitive, low-effort AI-generated scripts may still be ineligible for YouTube monetization.
+---
 
-## What works in the private backend
+## Built for moments, not timelines
 
-- Upload a video that you own or have permission to edit and publish (up to 700 MB; maximum four hours).
-- Suggest high-audio-energy moments, with scene-change fallback for silent footage.
-- Choose any start and end time, regardless of whether it is a football goal, gaming play, reaction, animal moment, tutorial moment or anything else.
-- Render a vertical 1080×1920 MP4 with the entire source picture visible over a blurred background.
-- Add animated karaoke-style captions. Timing is approximate, not forced-aligned.
-- Optionally generate original spoken narration using OpenAI's speech API, if a paid API key is configured.
-- Use a mobile-friendly private studio interface with bearer-token authentication and download exports.
-- Run the API with FFmpeg inside a Docker container.
+AIOClips AI is a personal production workspace for discovering compelling segments in footage **you can legally reuse** and exporting them as polished 9:16 drafts. When a third-party video is only a reference, a separate **Original Story** workflow generates new graphics from independently written material—without downloading or reusing that video's frames or audio.
 
-## Not yet done
+> [!IMPORTANT]
+> **Development alpha, not a production SaaS or copyright-clearing tool.** The GitHub Pages [preview](https://aion-2000.github.io/AIOClips-AI/) is a **static UI prototype**. It is not connected to the FFmpeg backend. The functional API and private studio must be run locally or deployed separately.
 
-- **YouTube links are parsed for reference only**. YouTube videos are not downloaded. For licensed clip mode, upload an authorized original file. For Original Story mode, supply independently verified facts and freshly written creative text.
-- Goal or event identification by AI vision, automatically accurate commentary, word-perfect caption alignment and automated YouTube OAuth publishing are not complete.
-- The GitHub Pages URL is an independent static prototype; **it does not run FFmpeg or the authenticated backend**.
-- The private studio API must be hosted on a server; it is not live merely because the source was committed to GitHub.
+### Two creative paths
 
-## Run locally
+| | **Highlight Studio** | **Original Story Studio** |
+| :--- | :--- | :--- |
+| **Starting point** | Original or licensed video file | Independently verified facts and newly written story beats |
+| **Output** | Vertical clip based on authorized footage | Newly generated geometric visuals |
+| **Creative layers** | Headline, animated captions, optional voiceover | Original title, animated captions, optional voiceover |
+| **Source permissions** | Footage and audio reuse rights required | Reference link is never imported or downloaded |
+| **Review** | Human rights and content review | Human facts, originality and publication review |
 
-Requires Docker.
+## Capabilities
+
+| Capability | State | What it actually does |
+| :--- | :---: | :--- |
+| Private, mobile-friendly studio | ✅ Implemented | Browser UI served by the backend with bearer-token API access |
+| Local video upload | ✅ Implemented | Validates playable media, duration and file size |
+| Moment suggestions | ✅ Heuristic | Uses audio energy; scene-cut fallback for silent footage |
+| Short-form rendering | ✅ Implemented | FFmpeg 1080 × 1920 output with blurred backdrop and headline |
+| Animated subtitles | ✅ Implemented | Karaoke-style ASS captions with estimated pacing |
+| AI narration | 🔑 Optional | Speech API integration; needs a separately configured API key and credits |
+| Original Story mode | ✅ Implemented | Generates graphics from your verified, independently written text |
+| YouTube URL recognition | ✅ Implemented | Validates links only; **does not download video** |
+| Automatic goal/event understanding | ◻ Planned | No vision-based semantic event recognition yet |
+| Automatic link-to-video pipeline | ◻ Planned | No unattended research or source import |
+| Frame-accurate caption alignment | ◻ Planned | Captions currently use estimated timing |
+| YouTube OAuth publishing | ◻ Planned | No direct upload or automatic publishing |
+| Public deployment | ◻ Pending | Requires a provisioned video-processing service |
+
+<details>
+<summary><strong>What the app currently looks like</strong></summary>
+
+The private studio frontend is in [`backend/app/studio.html`](backend/app/studio.html) and [`backend/app/studio.js`](backend/app/studio.js). The public [GitHub Pages preview](https://aion-2000.github.io/AIOClips-AI/) is a separate static concept, **not a live demonstration of rendering or AI features**.
+
+</details>
+
+## Workflow
+
+```mermaid
+flowchart LR
+    A["Choose source"] --> B{"Reuse rights?"}
+    B -->|"Owned / licensed"| C["Upload video"]
+    B -->|"Reference only"| D["Write verified original story"]
+    C --> E["Suggest moments"]
+    E --> F["Select segment"]
+    D --> G["Generate fresh graphics"]
+    F --> H["Captions + optional AI voice"]
+    G --> H
+    H --> I["Render vertical MP4"]
+    I --> J["Human review"]
+    J --> K["Download draft"]
+```
+
+**No automatic social publishing occurs.** Video source rights, script originality, factual correctness, and platform eligibility remain the publisher's responsibility.
+
+## Quick start
+
+### Requirements
+
+- Docker, or Python 3.11 with FFmpeg/FFprobe installed
+- A private `STUDIO_ACCESS_TOKEN` for the API
+- Optional: `OPENAI_API_KEY` for AI narration (**never expose it in client code**)
+
+### Option A — Docker
+
+From the repository root:
 
 ```bash
 docker build -t aioclips-studio .
-docker run --rm -p 127.0.0.1:8000:8000 \
-  -e STUDIO_ACCESS_TOKEN="replace-with-a-long-random-secret" \
-  -e OPENAI_API_KEY="your-own-server-side-api-key" \
-  -v aioclips-data:/data aioclips-studio
+
+docker run --rm \
+  --name aioclips \
+  -p 127.0.0.1:8000:8000 \
+  -e STUDIO_ACCESS_TOKEN="replace-with-a-strong-random-token" \
+  -v aioclips-data:/data \
+  aioclips-studio
 ```
 
-Open http://localhost:8000 and enter the configured studio token. `OPENAI_API_KEY` is optional if you leave narration empty.
+Open **http://localhost:8000** and enter the same studio token in the private login field. If you want AI voice, provide `OPENAI_API_KEY` as a **server-side** environment variable through a secure deployment mechanism; otherwise leave narration empty.
 
-For phone use outside your local network, deploy the Docker image to an HTTPS host with persistent storage and a private access token. `render.yaml` provides an optional paid hosting blueprint.
+### Option B — Python development
 
-### API endpoints
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r backend/requirements.txt
 
-- `GET /`: mobile-friendly private studio
-- `GET /v1/health`: health check
-- `POST /v1/links`: check supported YouTube link metadata; does **not** import footage
-- `POST /v1/uploads`: upload a video file
-- `POST /v1/moments`: suggested clip timestamps
-- `POST /v1/renders`: queue authorized draft export
-- `POST /v1/original-stories`: queue new graphics-only video from independently written facts and commentary
-- `GET /v1/renders/{job_id}`: job status
-- `GET /v1/exports/{job_id}`: download approved-source draft
+export STUDIO_ACCESS_TOKEN="replace-with-a-strong-random-token"
+cd backend
+uvicorn app.server:app --reload
+```
 
-All media endpoints require the `Authorization: Bearer <STUDIO_ACCESS_TOKEN>` request header.
+For Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`, set the token using `$env:STUDIO_ACCESS_TOKEN="..."`, and ensure `ffmpeg` and `ffprobe` are on your PATH.
 
-## Security and copyright
+Visit **http://127.0.0.1:8000**. Developer API docs are available at **http://127.0.0.1:8000/docs**.
 
-Do not commit credentials, access tokens, media or AI-generated outputs. Copyright ownership, scope of licenses, music/audio rights and commercial reuse must be independently verified before publishing. **Adding AI narration, cropping or captions does not remove content ownership or guarantee zero copyright claims/strikes.** YouTube's reused-content monetization policy is separate from copyright permissions.
+> [!NOTE]
+> To use the **real** studio on a phone outside your computer, deploy the Docker service behind HTTPS with persistent storage and authentication. The repository includes [`render.yaml`](render.yaml) as an example, but deployment is not yet active. Video rendering requires compute resources and may incur hosting charges.
 
-This alpha has in-memory jobs and local storage; use persistent queues, quotas, cleanup, rate limiting, monitoring, and an upload sandbox before offering it to other users.
+## Project layout
 
-See `docs/MATCH_CLIPS.md` and `SECURITY.md`.
+```text
+AIOClips-AI/
+├── assets/brand/             # Custom GitHub visual identity
+├── backend/
+│   ├── app/
+│   │   ├── server.py         # FastAPI, authentication and render jobs
+│   │   ├── studio.html/.js   # Mobile-friendly private editor
+│   │   ├── clip_studio.py    # Licensed-footage workflow
+│   │   ├── original_story.py # New visuals, no reference-footage reuse
+│   │   ├── match_clips.py    # Audio-energy detection and FFmpeg export
+│   │   ├── highlights.py     # Scene-cut candidates
+│   │   ├── captions.py       # Animated ASS subtitles
+│   │   ├── voice.py          # Optional AI speech
+│   │   └── approval.py       # Review and publication eligibility rules
+│   └── tests/                # Python tests and render smoke tests
+├── docs/                     # Architecture, setup and product roadmap
+├── .github/workflows/        # Backend tests and Pages preview
+├── Dockerfile                # Non-root processing container
+└── render.yaml               # Optional Render hosting blueprint
+```
+
+Read the [architecture documentation](docs/ARCHITECTURE.md) for boundaries, data flow and known production gaps.
+
+## Engineering quality
+
+Run tests locally:
+
+```bash
+python -m pip install -r backend/requirements.txt
+cd backend
+python -m pytest -q
+```
+
+GitHub Actions runs the backend test suite, including synthetic FFmpeg video-render checks. Passing tests validates the checked behaviors; it **does not** certify footage rights, public deployment, or end-to-end external AI availability.
+
+## Responsible use
+
+A watermark, crop, angle change, voiceover or caption track **does not** make unlicensed footage yours. AIOClips intentionally separates authorized footage edits from wholly original visual stories. Content ID claims, copyright strikes and platform monetization decisions cannot be guaranteed away.
+
+Review [`SECURITY.md`](SECURITY.md) before exposing the service to the internet. Current limitations include in-memory jobs, local storage and a shared private token; production hosting needs stronger user/session management, quotas, observability and job persistence.
+
+## Documentation
+
+| Resource | Why it matters |
+| :--- | :--- |
+| [Architecture](docs/ARCHITECTURE.md) | Components, trust boundaries and real request flows |
+| [Roadmap](docs/ROADMAP.md) | Prioritized delivery plan with acceptance criteria |
+| [Deployment guide](docs/DEPLOYMENT.md) | Local development and hosting requirements |
+| [Contributing](CONTRIBUTING.md) | Contribution and quality conventions |
+| [Security](SECURITY.md) | Risk disclosure and deployment hardening |
+| [Match clipping notes](docs/MATCH_CLIPS.md) | Audio-scene heuristics and authorized sources |
+
+---
+
+<div align="center">
+  <sub><strong>AIOClips AI</strong> · Designed for original storytelling and responsible media workflows.</sub>
+</div>
