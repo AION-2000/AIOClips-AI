@@ -2,6 +2,25 @@
 
 AIOClips AI is a private video studio progressing from a working local backend toward an easy, rights-aware mobile workflow. Statuses below reflect repository behavior, **not deployment readiness**.
 
+## Release 0.3c — Music to Video mobile beta (November 2026)
+
+- [x] Add fourth mobile-friendly Music to Video tab without replacing existing features
+- [x] Authenticated MP3/WAV/M4A upload, configurable size and duration
+- [x] Fail-closed mandatory commercial rights category, license/plan and HTTPS proof; private manifest
+- [x] FFmpeg duration, tempo/BPM, beat times and energy analysis
+- [x] Anthropic `claude-sonnet-5-5` theme JSON parsing with safe offline fallback
+- [x] Optional Pexels/Pixabay stock searches and downloadable source credits; animated gradients without external keys
+- [x] FFmpeg scene transitions, consistent color treatment, waveform, loudness normalization and 1080×1920 / 1920×1080 presets (internally upscaled)
+- [x] Authenticated progress stages, mobile video preview, downloads and 24h best-effort retention
+- [x] New automated rights, timing, JSON, stock query, credits and real FFmpeg render tests
+- [ ] Real physical Android upload → render → preview/download acceptance on Render Free
+- [ ] Validate longer-track memory usage, mobile connectivity and stock API integration with real keys
+- [ ] Optional lyrics auto-transcription on a larger host, forced-aligned captions and stronger BPM detection
+- [ ] Commercially verified music-generation provider (none enabled; no unverified promises)
+- [ ] Durable private storage; Render Free may delete all files on idle/redeploy before 24h
+
+**Status:** tested locally on GitHub-hosted Linux CI with FFmpeg, not independently confirmed from an Android device. [Full setup and constraints](MUSIC_TO_VIDEO.md).
+
 ## Release 0.3b — Authorized footage clipping beta (November 2026)
 
 - [x] Build bearer-authenticated upload endpoint for owned or permitted third-party video files
