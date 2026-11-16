@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="430" viewBox="0 0 1280 430" role="img" aria-labelledby="title desc">
+<title id="title">AIOClips AI</title><desc id="desc">Private video production studio. Find the moment. Shape the story.</desc>
+<defs>
+<linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0A1120"/><stop offset=".55" stop-color="#111E32"/><stop offset="1" stop-color="#091724"/></linearGradient>
+<linearGradient id="mint" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#58F2D2"/><stop offset="1" stop-color="#73B9FF"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#3CDBBD" stop-opacity=".24"/><stop offset="1" stop-color="#3CDBBD" stop-opacity="0"/></radialGradient>
+<filter id="shadow"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#020B15" flood-opacity=".45"/></filter>
+</defs>
+<rect width="1280" height="430" rx="24" fill="url(#background)"/>
+<circle cx="1025" cy="150" r="330" fill="url(#glow)"/>
+<path d="M0 360H1280M0 300H1280M0 240H1280M0 180H1280M0 120H1280M0 60H1280M90 0V430M180 0V430M270 0V430M360 0V430M450 0V430M540 0V430M630 0V430M720 0V430M810 0V430M900 0V430M990 0V430M1080 0V430M1170 0V430" fill="none" stroke="#9BC0DC" stroke-opacity=".055"/>
+<rect x="68" y="68" width="56" height="56" rx="15" fill="#1C3847" stroke="#47DCC6" stroke-opacity=".65"/>
+<path d="M86 83L109 96L86 109Z" fill="#60E7CD"/>
+<path d="M95 79L116 91M95 113L116 101" stroke="#80B6FF" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+<text x="142" y="108" fill="#F2F7FB" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="25" letter-spacing="1.3">AIOCLIPS<tspan fill="#69E8D0"> AI</tspan></text>
+<rect x="68" y="151" width="160" height="30" rx="15" fill="#143E43" stroke="#317D7C" stroke-opacity=".55"/>
+<circle cx="85" cy="166" r="4" fill="#6AEDD3"/>
+<text x="99" y="171" fill="#A9F8EA" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" letter-spacing="2">PRIVATE STUDIO</text>
+<text x="67" y="242" fill="#F6FAFF" font-family="Arial,Helvetica,sans-serif" font-size="55" font-weight="750" letter-spacing="-1.8">Find the moment.</text>
+<text x="67" y="302" fill="url(#mint)" font-family="Arial,Helvetica,sans-serif" font-size="55" font-weight="750" letter-spacing="-1.8">Shape the story.</text>
+<text x="68" y="344" fill="#9FB3C8" font-family="Arial,Helvetica,sans-serif" font-size="18">Highlights  /  Original visuals  /  Voiceover  /  Captions</text>
+<g filter="url(#shadow)">
+<rect x="825" y="44" width="238" height="354" rx="26" fill="#1B2B41" stroke="#486982"/>
+<rect x="840" y="59" width="208" height="324" rx="18" fill="#0F1E30"/>
+<rect x="840" y="59" width="208" height="324" rx="18" fill="url(#background)" opacity=".7"/>
+<path d="M855 260L900 185L951 220L1000 145L1035 179L1035 328L855 328Z" fill="#275466" opacity=".9"/>
+<path d="M855 251L894 213L942 246L987 170L1035 202" fill="none" stroke="#58F2D2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="858" y="83" width="172" height="31" rx="8" fill="#173A43"/>
+<text x="944" y="103" text-anchor="middle" fill="#A2F5E2" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700">THE MOMENT</text>
+<circle cx="944" cy="224" r="31" fill="#EFFCFC" fill-opacity=".93"/>
+<path d="M935 207L958 224L935 240Z" fill="#102C3A"/>
+<rect x="865" y="296" width="159" height="34" rx="8" fill="#162638"/>
+<text x="944" y="319" text-anchor="middle" fill="#FFFFFF" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="700">MAKE IT COUNT.</text>
+<rect x="898" y="366" width="91" height="4" rx="2" fill="#6A7B90"/>
+</g>
+<g filter="url(#shadow)">
+<rect x="1084" y="104" width="149" height="62" rx="13" fill="#182D3C" stroke="#3D6370"/>
+<circle cx="1111" cy="135" r="15" fill="#204C51"/>
+<path d="M1104 135H1118M1111 128V142" stroke="#5CF0D2" stroke-width="2.8" stroke-linecap="round"/>
+<text x="1134" y="130" fill="#F1F8FF" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700">CAPTIONS</text><text x="1134" y="145" fill="#86C9BD" font-family="Arial,Helvetica,sans-serif" font-size="11">ANIMATED</text>
+<rect x="1084" y="185" width="149" height="62" rx="13" fill="#182D3C" stroke="#3D6370"/>
+<path d="M1100 211H1107V221H1100ZM1112 205H1119V227H1112ZM1124 211H1131V221H1124Z" fill="#73B9FF"/>
+<text x="1142" y="211" fill="#F1F8FF" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700">AI VOICE</text><text x="1142" y="227" fill="#97BCD8" font-family="Arial,Helvetica,sans-serif" font-size="10">OPTIONAL</text>
+</g>
+<rect x="68" y="379" width="1144" height="1" fill="#78AFC1" opacity=".2"/>
+</svg>
