@@ -1,16 +1,16 @@
+# Optional Render Blueprint for the original-story MVP.
+# AIOClips has already been deployed manually as a Free web service.
+# Free services sleep after inactivity and use ephemeral storage.
 services:
   - type: web
-    name: aioclips-private-studio
+    name: aioclips-original-story
     runtime: docker
-    plan: starter
-    healthCheckPath: /v1/health
+    plan: free
+    region: singapore
     dockerfilePath: ./Dockerfile
-    disk:
-      name: aioclips-media
-      mountPath: /data
-      sizeGB: 20
+    healthCheckPath: /v1/health
     envVars:
       - key: STUDIO_ACCESS_TOKEN
-        generateValue: true
-      - key: STUDIO_DATA_DIR
-        value: /data
+        sync: false # Enter a new strong private token in the Render dashboard.
+      - key: STORY_TTL_SECONDS
+        value: "1800"
