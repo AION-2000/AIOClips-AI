@@ -94,7 +94,7 @@ def analyze_audio(path: Path, max_seconds: int = 120) -> AudioStats:
         count = max(1, len(novelty) - lag)
         scores.append((score / count, lag))
     best, lag = max(scores)
-    bpm = round(60.0 / (lag / 10.0), 1) if best > 0.00004 else 120.0
+    bpm = round(min(180.0, max(60.0, 60.0 / (lag / 10.0))), 1) if best > 0.00004 else 120.0
     interval = 60 / bpm
     strongest = max(range(min(len(novelty), max(1, round(interval * 10)))),
                     key=novelty.__getitem__)
