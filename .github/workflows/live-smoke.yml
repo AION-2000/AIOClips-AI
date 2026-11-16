@@ -21,7 +21,10 @@ jobs:
             --max-time 90 "https://aion-2000.github.io/AIOClips-AI/" -o index.html
           grep -q 'id="storyForm"' index.html
           grep -q 'id="download"' index.html
-          echo "Live GitHub Pages studio contains real rendering controls"
+          grep -q 'id="uploadForm"' index.html
+          grep -q 'id="clipForm"' index.html
+          grep -q 'id="clipDownload"' index.html
+          echo "Live GitHub Pages studio contains original-story and footage clipping controls"
 
       - name: Check Render HTTPS health and token configuration
         run: |
@@ -65,3 +68,16 @@ jobs:
             -D /tmp/cors.txt -o /dev/null
           grep -qi '^access-control-allow-origin: https://aion-2000.github.io' /tmp/cors.txt
           echo "Owner website origin accepted"
+
+      - name: Verify anonymous footage analysis and clipping denied
+        run: |
+          set -euo pipefail
+          for endpoint in "highlights" "clips"; do
+            code=$(curl --silent --show-error --max-time 90 \
+              -o /tmp/footage-denial.json -w '%{http_code}' \
+              -X POST "https://aioclips-original-story.onrender.com/v1/footage/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/$endpoint" \
+              -H 'Content-Type: application/json' \
+              -d '{"seconds":3,"limit":2,"start":0,"end":2,"headline":"Example","caption_script":"Original remarks","permission_to_publish":true}')
+            test "$code" = "401"
+            echo "Anonymous footage $endpoint blocked: HTTP $code"
+          done
