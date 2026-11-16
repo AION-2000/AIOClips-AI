@@ -24,7 +24,11 @@ jobs:
           grep -q 'id="uploadForm"' index.html
           grep -q 'id="clipForm"' index.html
           grep -q 'id="clipDownload"' index.html
-          echo "Live GitHub Pages studio contains original-story and footage clipping controls"
+          grep -q 'id="musicForm"' index.html
+          grep -q 'id="musicProof"' index.html
+          grep -q 'id="musicDownload"' index.html
+          grep -q 'id="musicCredits"' index.html
+          echo "Live GitHub Pages studio contains original, footage and Music to Video controls"
 
       - name: Check Render HTTPS health and token configuration
         run: |
@@ -81,3 +85,22 @@ jobs:
             test "$code" = "401"
             echo "Anonymous footage $endpoint blocked: HTTP $code"
           done
+
+      - name: Verify anonymous Music to Video endpoints are private
+        run: |
+          set -euo pipefail
+          for endpoint in "config" "jobs"; do
+            code=$(curl --silent --show-error --max-time 90 \
+              -o /tmp/music-denial.json -w '%{http_code}' \
+              "https://aioclips-original-story.onrender.com/v1/music/$endpoint")
+            test "$code" = "401"
+            echo "Unauthenticated /v1/music/$endpoint denied: HTTP $code"
+          done
+          curl --fail --silent --show-error --max-time 90 \
+            -X OPTIONS "https://aioclips-original-story.onrender.com/v1/music/jobs" \
+            -H 'Origin: https://aion-2000.github.io' \
+            -H 'Access-Control-Request-Method: POST' \
+            -H 'Access-Control-Request-Headers: authorization,content-type' \
+            -D /tmp/music-cors.txt -o /dev/null
+          grep -qi '^access-control-allow-origin: https://aion-2000.github.io' /tmp/music-cors.txt
+          echo "Music upload CORS allowed from GitHub Pages only"
