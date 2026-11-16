@@ -75,6 +75,23 @@ video{width:100%;max-height:390px;object-fit:contain;background:#090d13;border-r
 <button class="full" id="generate">Generate review clip</button>
 <div id="message" aria-live="polite"></div>
 </section>
+<section class="panel" id="originalStudio">
+<h2>05 · Create an original Short without copied footage</h2>
+<p class="note">Have a reference link but no permission to reuse the video? Use the factual topic to write a new story with generated visuals. This mode never downloads or reproduces the original video or audio.</p>
+<label for="originalUrl">YouTube reference (optional)</label>
+<input id="originalUrl" type="url" placeholder="https://youtu.be/…">
+<label for="originalTitle">Original title</label>
+<input id="originalTitle" maxlength="110" placeholder="Your own headline">
+<label for="originalBeats">Verified story beats (one original idea per line)</label>
+<textarea id="originalBeats" rows="6" placeholder="What happened?\nWhy does it matter?\nYour commentary or key insight"></textarea>
+<small>1–8 distinct beats, each up to 180 characters. Don't copy the source transcript, images or music.</small>
+<label for="originalVoice">Original AI narration script (optional)</label>
+<textarea id="originalVoice" placeholder="Write a fresh commentary script. Leave blank for a silent Short."></textarea>
+<small>A server-side speech API key is required for AI voice. The caption timing is approximate.</small>
+<label class="check"><input type="checkbox" id="originalFacts">I've checked the underlying facts.</label>
+<label class="check"><input type="checkbox" id="originalWritten">My script and story beats are independently written and do not reproduce copyrighted creative expression.</label>
+<button id="originalGenerate" class="full">Make a new video without reference footage</button>
+</section>
 </div>
 <div>
 <section class="panel">
