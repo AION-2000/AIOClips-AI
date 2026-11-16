@@ -2,6 +2,22 @@
 
 AIOClips AI is a private video studio progressing from a working local backend toward an easy, rights-aware mobile workflow. Statuses below reflect repository behavior, **not deployment readiness**.
 
+## Release 0.3b — Authorized footage clipping beta (November 2026)
+
+- [x] Build bearer-authenticated upload endpoint for owned or permitted third-party video files
+- [x] Require declared reuse rights, evidence reference and explicit consent
+- [x] Use existing FFmpeg audio-energy / scene-cut heuristics to suggest moments
+- [x] Allow manual timeline trimming, original headline and captions
+- [x] Queue 540×960 FFmpeg exports and reuse authenticated status/download endpoints
+- [x] Enforce 40 MiB upload, 180-second video, 60-second clip, rate and job limits
+- [x] Add scheduled expiry of private uploaded video and rendered MP4 files
+- [x] Build responsive Android upload/analysis/clip UI and passing synthetic-media integration tests
+- [ ] Physical Android test against deployed Render server (upload → suggestions → edited MP4 → download)
+- [ ] Better semantic scene understanding and transcription-based highlighting
+- [ ] Authorized import connectors where a service provides permitted source access (not unrestricted YouTube ripping)
+
+**Current limit:** third-party YouTube links still act as references, not downloadable media feeds. The hosted beta clips user-uploaded files after a rights declaration. See [authorized-footage guide](AUTHORIZED_FOOTAGE_WORKFLOW.md).
+
 ## Release 0.3a — Hosted original-story mobile beta (November 2026)
 
 - [x] Select Render Free for focused Docker-based rendering
