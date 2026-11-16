@@ -2,6 +2,21 @@
 
 AIOClips AI is a private video studio progressing from a working local backend toward an easy, rights-aware mobile workflow. Statuses below reflect repository behavior, **not deployment readiness**.
 
+## Release 0.3a — Hosted original-story mobile beta (November 2026)
+
+- [x] Select Render Free for focused Docker-based rendering
+- [x] Provision Render HTTPS service and store owner token in Render environment
+- [x] Deploy CORS-limited original-story API with request limits and automatic temporary file expiry
+- [x] Build GitHub Pages mobile UI with original story title, 1–8 beats, duration and consent declarations
+- [x] Show live job status, secure MP4 preview and authenticated download in code
+- [x] Separate reference-only URL mode from unavailable owned-footage upload
+- [x] Add actual FFmpeg 540×960 API integration test and mobile UI syntax/contract tests
+- [x] Confirm backend CI green and Render deployment reported live
+- [ ] **Acceptance test on physical Android phone:** submit a story → receive ready status → preview/download real MP4
+- [ ] Observe memory/CPU usage and longer-beat jobs on Render Free; correct any deployment-specific failures
+
+**Current limitation:** an automated backend test and a Render 'live' deployment do not prove end-to-end Android rendering. Free-tier restarts discard temporary work. See [Android studio guide](MOBILE_STUDIO_DEPLOYMENT.md).
+
 ## Release 0.2 — Working local studio
 
 - [x] Authenticated upload endpoint and playable-video validation
