@@ -13,11 +13,25 @@
 
   <br /><br />
 
+  <a href="https://aion-2000.github.io/AIOClips-AI/"><strong>🌐 LIVE PREVIEW</strong></a> · <a href="https://github.com/AION-2000/AIOClips-AI/actions/workflows/batch-original-story.yml"><strong>☁️ CLOUD RENDERER</strong></a>
+
+  <br />
+
   [**Get started**](#quick-start) · [**Explore capabilities**](#capabilities) · [**Architecture**](docs/ARCHITECTURE.md) · [**Roadmap**](docs/ROADMAP.md) · [**Security**](SECURITY.md)
 
 </div>
 
 ---
+
+## Live links
+
+| Experience | Link | Current status |
+| :--- | :--- | :--- |
+| **Website preview** | **[Open AIOClips AI ↗](https://aion-2000.github.io/AIOClips-AI/)** | Public GitHub Pages UI prototype |
+| **Cloud video rendering** | **[GitHub Actions batch renderer ↗](https://github.com/AION-2000/AIOClips-AI/actions/workflows/batch-original-story.yml)** | Working original-story batch render; requires authorized GitHub workflow access |
+| **Private FastAPI studio** | Not publicly deployed | Runs locally or on a separately provisioned backend |
+
+> **Note:** The live website is a frontend preview only. It is **not yet connected** to the cloud renderer, so visitors cannot upload and generate video directly from that page.
 
 ## Built for moments, not timelines
 
